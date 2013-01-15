@@ -10,7 +10,16 @@
         <models>
             <tmcore>
                 <class>TM_Core_Model</class>
+                <resourceModel>tmcore_resource</resourceModel>
             </tmcore>
+            <tmcore_resource>
+                <class>TM_Core_Model_Resource</class>
+                <entities>
+                    <module>
+                        <table>tm_core_module</table>
+                    </module>
+                </entities>
+            </tmcore_resource>
         </models>
         <blocks>
             <tmcore>
@@ -22,9 +31,26 @@
                 <class>TM_Core_Helper</class>
             </tmcore>
         </helpers>
+        <resources>
+            <tm_core_setup>
+                <setup>
+                    <module>TM_Core</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </tm_core_setup>
+        </resources>
     </global>
 
     <adminhtml>
+        <layout>
+            <updates>
+                <tmcore>
+                    <file>tmcore.xml</file>
+                </tmcore>
+            </updates>
+        </layout>
         <events>
             <controller_action_predispatch>
                 <observers>
@@ -44,6 +70,19 @@
                 </TM_Core>
             </modules>
         </translate>
+        <menu>
+            <templates_master>
+                <title>Templates Master</title>
+                <sort_order>71</sort_order>
+                <children>
+                    <tmcore_module translate="title" module="tmcore">
+                        <title>Modules</title>
+                        <sort_order>999</sort_order>
+                        <action>adminhtml/tmcore_module/index</action>
+                    </tmcore_module>
+                </children>
+            </templates_master>
+        </menu>
         <acl>
             <resources>
                 <admin>
@@ -59,11 +98,33 @@
                                 </config>
                             </children>
                         </system>
+                        <templates_master>
+                            <title>Templates Master</title>
+                            <sort_order>71</sort_order>
+                            <children>
+                                <tmcore_module translate="title" module="tmcore">
+                                    <title>Modules</title>
+                                    <sort_order>999</sort_order>
+                                </tmcore_module>
+                            </children>
+                        </templates_master>
                     </children>
                 </admin>
             </resources>
         </acl>
     </adminhtml>
+
+    <admin>
+        <routers>
+             <adminhtml>
+                 <args>
+                     <modules>
+                         <tmcore before="Mage_Adminhtml">TM_Core_Adminhtml</tmcore>
+                     </modules>
+                 </args>
+             </adminhtml>
+        </routers>
+    </admin>
 
     <default>
         <tmcore>

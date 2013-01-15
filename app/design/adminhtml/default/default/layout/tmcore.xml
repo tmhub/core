@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_tmcore_module_index>
+        <update handle="tmcore_popup"/>
+        <reference name="content">
+            <block type="tmcore/adminhtml_module" name="module.list"/>
+        </reference>
+    </adminhtml_tmcore_module_index>
+
+    <adminhtml_tmcore_module_grid>
+        <block type="tmcore/adminhtml_module_grid" name="root" output="toHtml"/>
+    </adminhtml_tmcore_module_grid>
+
+    <adminhtml_tmcore_module_upgrade>
+        <reference name="content">
+            <block type="tmcore/adminhtml_module_upgrade" name="module.upgrade"/>
+        </reference>
+        <reference name="left">
+            <block type="tmcore/adminhtml_module_upgrade_tabs" name="tmcore_module_upgrade_tabs">
+                <block type="tmcore/adminhtml_module_upgrade_tab_main" name="tmcore_module_upgrade_tab_main" />
+                <action method="addTab"><name>main_section</name><block>tmcore_module_upgrade_tab_main</block></action>
+            </block>
+        </reference>
+    </adminhtml_tmcore_module_upgrade>
+
+    <tmcore_popup>
+        <reference name="head">
+            <action method="addJs"><script>tm/adminhtml/core/window.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="tmcore.popup" template="tmcore/popup.phtml"/>
+        </reference>
+    </tmcore_popup>
+</layout>
