@@ -144,12 +144,19 @@ abstract class TM_Core_Model_Module_Upgrade
             }
 
             foreach ($this->getStoreIds() as $storeId) {
-                $store = $this->_getStore($storeId);
+                if (!$storeId) {
+                    $website = null;
+                    $store   = null;
+                } else {
+                    $website = $this->_getStore($storeId)->getWebsite()->getCode();
+                    $store   = $this->_getStore($storeId)->getCode();
+                }
+
                 try {
                     Mage::getModel('adminhtml/config_data')
                         ->setSection($section)
-                        ->setWebsite($store->getWebsite()->getCode())
-                        ->setStore($store->getCode())
+                        ->setWebsite($website)
+                        ->setStore($store)
                         ->setGroups($groups)
                         ->save();
                 } catch (Exception $e) {
