@@ -90,7 +90,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     public function addStores(array $ids)
     {
         $installedStores = $this->getStoreIds();
-        if (empty($installedStores)) {
+        if (!count($installedStores)) {
             $installedStores = array();
         } elseif (!is_array($installedStores)) {
             $installedStores = explode(',', $installedStores);
@@ -109,7 +109,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     public function getStores()
     {
         $ids = $this->getStoreIds();
-        if (empty($ids)) {
+        if (!count($ids)) {
             return array();
         } elseif (!is_array($ids)) {
             $ids = explode(',', $ids);
@@ -192,7 +192,8 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function up($from = null, $to = null)
     {
-        if (!$this->getStores()) {
+        $stores = $this->getStores();
+        if (!count($stores)) {
             return;
         }
 
