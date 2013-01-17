@@ -49,7 +49,11 @@ abstract class TM_Core_Model_Module_Upgrade
      */
     public function setStoreIds(array $ids)
     {
-        $this->_storeIds = $ids;
+        if (Mage::app()->isSingleStoreMode()) {
+            $this->_storeIds = array(Mage::app()->getStore(true)->getId());
+        } else {
+            $this->_storeIds = $ids;
+        }
     }
 
     /**
@@ -144,7 +148,7 @@ abstract class TM_Core_Model_Module_Upgrade
             }
 
             foreach ($this->getStoreIds() as $storeId) {
-                if (!$storeId) {
+                if (!$storeId) { // all stores selected
                     $website = null;
                     $store   = null;
                 } else {
@@ -180,16 +184,20 @@ abstract class TM_Core_Model_Module_Upgrade
      */
     public function runCmsblock($data)
     {
+        $isSingleStore = Mage::app()->isSingleStoreMode();
         foreach ($data as $blockData) {
             // backup existing similar blocks
             $collection = Mage::getModel('cms/block')->getCollection()
-                ->addFilter('identifier', $blockData['identifier'])
-                ->addStoreFilter($this->getStoreIds());
+                ->addFilter('identifier', $blockData['identifier']);
+
+            if (!$isSingleStore) {
+                $collection->addStoreFilter($this->getStoreIds());
+            }
 
             foreach ($collection as $block) {
                 $block->load(); // load stores
                 $storesToLeave = array_diff($block->getStores(), $this->getStoreIds());
-                if (count($storesToLeave)) {
+                if (count($storesToLeave) && !$isSingleStore) {
                     $block->setStores($storesToLeave);
                 } else {
                     $block->setIsActive(0)
@@ -236,16 +244,20 @@ abstract class TM_Core_Model_Module_Upgrade
      */
     public function runCmspage($data)
     {
+        $isSingleStore = Mage::app()->isSingleStoreMode();
         foreach ($data as $pageData) {
             // backup existing similar blocks
             $collection = Mage::getModel('cms/page')->getCollection()
-                ->addFilter('identifier', $pageData['identifier'])
-                ->addStoreFilter($this->getStoreIds());
+                ->addFilter('identifier', $pageData['identifier']);
+
+            if (!$isSingleStore) {
+                $collection->addStoreFilter($this->getStoreIds());
+            }
 
             foreach ($collection as $page) {
                 $page->load(); // load stores
                 $storesToLeave = array_diff($page->getStoreId(), $this->getStoreIds());
-                if (count($storesToLeave)) {
+                if (count($storesToLeave) && !$isSingleStore) {
                     $page->setStores($storesToLeave);
                 } else {
                     $page->setIsActive(0)
@@ -321,6 +333,7 @@ abstract class TM_Core_Model_Module_Upgrade
             'target'     => 'popup',
             'hide_url'   => 0
         );
+        $isSingleStore = Mage::app()->isSingleStoreMode();
         foreach ($data as $placeholderData) {
             $placeholder = Mage::getModel('easybanner/placeholder');
             if (!empty($placeholderData['name'])) {
@@ -349,7 +362,7 @@ abstract class TM_Core_Model_Module_Upgrade
                 foreach ($collection as $banner) {
                     $storesToLeave = array_diff($banner->getStoreIds(), $this->getStoreIds());
                     $banner->getPlaceholderIds(); // we should load placeholders, because they will cleared in _AfterSave method
-                    if (count($storesToLeave)) {
+                    if (count($storesToLeave) && !$isSingleStore) {
                         $banner->setStoreIds($storesToLeave);
                     } else {
                         $banner->setStatus(0)
@@ -473,7 +486,7 @@ abstract class TM_Core_Model_Module_Upgrade
             'stock' => 2,
             'new'   => 3
         );
-
+        $isSingleStore = Mage::app()->isSingleStoreMode();
         foreach ($data as $labelData) {
             if (!empty($labelData['type']) && isset($typeMapping[$labelData['type']])) {
                 $system     = true;
@@ -493,7 +506,7 @@ abstract class TM_Core_Model_Module_Upgrade
             foreach ($collection as $label) {
                 $label->load(); // load stores
                 $storesToLeave = array_diff($label->getStoreId(), $this->getStoreIds());
-                if (count($storesToLeave)) {
+                if (count($storesToLeave) && !$isSingleStore) {
                     $label->setStores($storesToLeave) // @todo _afterSave for system label
                         ->setStoreIds($storesToLeave);
                 } else {
