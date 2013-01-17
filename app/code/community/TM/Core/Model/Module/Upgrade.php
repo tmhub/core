@@ -1,6 +1,6 @@
 <?php
 
-abstract class TM_Core_Model_Module_Upgrade
+abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
 {
     /**
      * @var array Store ids, where the module will be installed
@@ -46,6 +46,8 @@ abstract class TM_Core_Model_Module_Upgrade
 
     /**
      * Set store ids to run the upgrade on
+     *
+     * @return TM_Core_Model_Module_Upgrade
      */
     public function setStoreIds(array $ids)
     {
@@ -54,6 +56,7 @@ abstract class TM_Core_Model_Module_Upgrade
         } else {
             $this->_storeIds = $ids;
         }
+        return $this;
     }
 
     /**
@@ -666,7 +669,18 @@ abstract class TM_Core_Model_Module_Upgrade
      */
     protected function _fault($type, Exception $e)
     {
-        // @todo log errors
+        $this->_getMessageLogger()->addError($type, array(
+            'message' => $e->getMessage(),
+            'trace'   => $e->getTraceAsString()
+        ));
+    }
+
+    /**
+     * @return TM_Core_Model_Module_ErrorLogger
+     */
+    protected function _getMessageLogger()
+    {
+        return $this->getModule()->getMessageLogger();
     }
 
     /**

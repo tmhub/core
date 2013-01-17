@@ -6,6 +6,11 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     const VERSION_OUTDATED   = 2; // new upgrades are avaialble
     const VERSION_DEPRECATED = 3; // new version is avaialble but now uploaded
 
+    /**
+     * @var TM_Core_Model_Module_ErrorLogger
+     */
+    protected static $_messageLogger = null;
+
     protected function _construct()
     {
         $this->_init('tmcore/module');
@@ -212,6 +217,20 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Retrieve singleton instance of error logger, used in upgrade file
+     * to write errors and module controller to read them.
+     *
+     * @return TM_Core_Model_Module_MessageLogger
+     */
+    public function getMessageLogger()
+    {
+        if (null === self::$_messageLogger) {
+            self::$_messageLogger = Mage::getSingleton('tmcore/module_messageLogger');
+        }
+        return self::$_messageLogger;
+    }
+
+    /**
      * This method is used to get the operations for preview only
      *
      * @see getUpgradeOperationsAsString
@@ -299,7 +318,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         require_once $this->getUpgradesPath() . "/{$version}.php";
         $className = $this->_getUpgradeClassName($version);
         $upgrade = new $className();
-        $upgrade->setStoreIds($this->getStores());
+        $upgrade->setStoreIds($this->getStores())->setModule($this);
         return $upgrade;
     }
 
