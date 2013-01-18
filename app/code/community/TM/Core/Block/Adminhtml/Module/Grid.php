@@ -29,7 +29,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         ));
 
         $this->addColumn('version', array(
-            'header' => Mage::helper('tmcore')->__('Installed Version'),
+            'header' => Mage::helper('tmcore')->__('Local Version'),
             'align'  => 'right',
             'index'  => 'version',
             'width'  => '80px'
