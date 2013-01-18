@@ -6,7 +6,7 @@ class TM_Core_Block_Adminhtml_Module extends Mage_Adminhtml_Block_Widget_Grid_Co
     {
         $this->_controller = 'adminhtml_module';
         $this->_blockGroup = 'tmcore';
-        $this->_headerText = Mage::helper('easybanner')->__('Modules');
+        $this->_headerText = Mage::helper('tmcore')->__('Modules');
         parent::__construct();
         $this->_removeButton('add');
     }
