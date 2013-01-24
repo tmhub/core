@@ -14,15 +14,6 @@ class TM_Core_Block_Adminhtml_Module_Upgrade extends Mage_Adminhtml_Block_Widget
         $this->setData('form_action_url', $this->getUrl('*/*/upgradePost'));
         $this->_updateButton('save', 'label', Mage::helper('tmcore')->__('Run'));
         $this->_removeButton('delete');
-
-        $mode = $this->getRequest()->getParam('upgrade_mode');
-        // if ('upgrade' === $mode) {
-//            $this->_addButton('skip', array(
-//                'label'   => Mage::helper('adminhtml')->__('Skip this upgrade'),
-//                'onclick' => 'if (confirm(\'' . Mage::helper('cms')->__('Are you sure want to mark module data as updated?') . '\')) { setLocation(\'' . $this->getSkipUrl() . '\'); }',
-//                'class'   => 'delete'
-//            ));
-        // }
     }
 
     /**
@@ -33,11 +24,24 @@ class TM_Core_Block_Adminhtml_Module_Upgrade extends Mage_Adminhtml_Block_Widget
     public function getHeaderText()
     {
         $model = Mage::registry('tmcore_module');
-        if ($model->isInstalled()) {
-            return Mage::helper('tmcore')->__('Upgrade %s data to %s', $model->getCode(), $model->getDataVersion());
-        } else {
-            return Mage::helper('tmcore')->__('Install %s %s', $model->getCode(), $model->getVersion());
+        if ($model->getDataVersion()) { // module is installed already
+            if ($model->getUpgradesToRun()) {
+                $label = 'Upgrade and Install/Reinstall %s %s (Data version %s)';
+            } else {
+                $label = 'Install or Reinstall %s %s (Data version %s)';
+            }
+            return Mage::helper('tmcore')->__(
+                $label,
+                $model->getCode(),
+                $model->getVersion(),
+                $model->getDataVersion()
+            );
         }
+        return Mage::helper('tmcore')->__(
+            'Install %s %s',
+            $model->getCode(),
+            $model->getVersion()
+        );
     }
 
     public function getSkipUrl()

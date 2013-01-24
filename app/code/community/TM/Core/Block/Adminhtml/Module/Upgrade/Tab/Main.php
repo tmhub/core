@@ -14,35 +14,63 @@ class TM_Core_Block_Adminhtml_Module_Upgrade_Tab_Main
 
         $form->setHtmlIdPrefix('module_');
 
+        $stores = Mage::getSingleton('adminhtml/system_store')->getStoreOptionHash(true);
+        if (isset($stores[0])) {
+            $stores[0] = Mage::helper('adminhtml')->__('All Store Views');
+        }
+
+        if ($model->getDataVersion() && ($upgrades = $model->getUpgradesToRun())) {
+            $fieldset = $form->addFieldset('upgrade_fieldset', array(
+                'legend' => Mage::helper('cms')->__('Upgrade Information'),
+                'class'  => 'fieldset-wide'
+            ));
+            $fieldset->addField('skip_upgrade', 'checkbox', array(
+                'name'  => 'skip_upgrade',
+                'label' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade instructions'),
+                'title' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade instructions'),
+                'value' => 1
+            ));
+
+            $label = Mage::helper('tmcore')->__(
+                'Module data will be upgraded from %s to %s at the following stores',
+                $model->getDataVersion(),
+                $upgrades[count($upgrades) - 1]
+            );
+            $fieldset->addField('installed_stores', 'textarea', array(
+                // 'name'     => 'installed_stores',
+                'label'    => $label,
+                'title'    => $label,
+                'value'    => implode("\n", array_intersect_key($stores, array_flip($model->getStores()))),
+                'readonly' => 1
+            ));
+        }
+
         $fieldset = $form->addFieldset('base_fieldset', array(
-            'legend' => Mage::helper('cms')->__('General Information'),
+            'legend' => Mage::helper('tmcore')->__('Install and Reinstall Information'),
             'class'  => 'fieldset-wide'
         ));
-
         $fieldset->addField('code', 'hidden', array(
             'name' => 'id'
         ));
-
+        $fieldset->addField('store_ids', 'hidden', array(
+            // 'name' => 'store_ids'
+        ));
         $field = $fieldset->addField('store_id', 'multiselect', array(
-            'name'      => 'stores[]',
-            'label'     => Mage::helper('cms')->__('Stores to install and activate module'),
-            'title'     => Mage::helper('cms')->__('Stores to install and activate module'),
-            'required'  => true,
-            'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
+            'name'   => 'stores[]',
+            'label'  => Mage::helper('tmcore')->__('Select stores to install or reinstall module'),
+            'title'  => Mage::helper('tmcore')->__('Select stores to install or reinstall module'),
+            'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true)
         ));
         $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
         $field->setRenderer($renderer);
 
-//        if ($operations = $model->getUpgradeOperationsAsString($model->getDataVersion())) {
-//            $field = $fieldset->addField('upgrade_operation', 'textarea', array(
-//                'name'     => 'todo',
-//                'label'    => Mage::helper('cms')->__('What will be done'),
-//                'title'    => Mage::helper('cms')->__('What will be done'),
-//                'value'    => $operations,
-//                'readonly' => 1,
-//                'style'    => 'height: 300px;'
-//            ));
-//        }
+        $fieldset->addField('installed_stores_info', 'label', array(
+            // 'name'     => 'installed_stores_info',
+            'label'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
+            'title'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
+            'value'    => implode(", ", array_intersect_key($stores, array_flip($model->getStores()))),
+            'readonly' => 1
+        ));
 
         $form->addValues($model->getData());
         $this->setForm($form);

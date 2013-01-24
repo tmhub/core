@@ -49,20 +49,21 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
             $this->_redirect('*/*/index');
         }
 
-        $stores = $this->getRequest()->getPost('stores', array());
-
         /**
          * @var TM_Core_Model_Module
          */
         $module = Mage::getModel('tmcore/module');
         $module->load($this->getRequest()->getParam('id'));
-        if (!$module->hasUpgradesToRun()) {
+        if (!$module->hasUpgradesDir()) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('tmcore')->__("Module upgrade files are not found"));
             $this->_redirect('*/*/');
             return;
         }
 
-        $module->addStores($stores)->up();
+        $module->setSkipUpgrade($this->getRequest()->getPost('skip_upgrade', false))
+            ->setNewStores($this->getRequest()->getPost('stores', array()))
+            ->setIdentityKey($this->getRequest()->getParam('identity_key'))
+            ->up();
         Mage::app()->cleanCache();
         Mage::dispatchEvent('adminhtml_cache_flush_system');
 
