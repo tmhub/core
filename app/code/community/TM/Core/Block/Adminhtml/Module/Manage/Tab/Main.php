@@ -1,6 +1,6 @@
 <?php
 
-class TM_Core_Block_Adminhtml_Module_Upgrade_Tab_Main
+class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
     extends Mage_Adminhtml_Block_Widget_Form
     implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {

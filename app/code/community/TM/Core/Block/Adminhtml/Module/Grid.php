@@ -69,6 +69,6 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/upgrade', array('id' => $row->getId()));
+        return $this->getUrl('*/*/manage', array('id' => $row->getId()));
     }
 }

@@ -26,10 +26,10 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $this->renderLayout();
     }
 
-    public function upgradeAction()
+    public function manageAction()
     {
         $this->_initAction()
-            ->_addBreadcrumb(Mage::helper('tmcore')->__('Upgrade'), Mage::helper('tmcore')->__('Upgrade'));
+            ->_addBreadcrumb(Mage::helper('tmcore')->__('Manage'), Mage::helper('tmcore')->__('Manage'));
 
         $id = $this->getRequest()->getParam('id');
         $module = Mage::getModel('tmcore/module');
@@ -44,12 +44,7 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $this->renderLayout();
     }
 
-    public function skipAction()
-    {
-        //
-    }
-
-    public function upgradePostAction()
+    public function runAction()
     {
         if (!$this->getRequest()->isPost()) {
             $this->_redirect('*/*/index');
@@ -80,9 +75,9 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
                     Mage::getSingleton('adminhtml/session')->addError($message);
                 }
             }
-            $this->_redirect('*/*/upgrade', array('id' => $module->getId()));
+            $this->_redirect('*/*/manage', array('id' => $module->getId()));
         } else {
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been installed"));
+            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been saved"));
             $this->_redirect('*/*/');
         }
     }

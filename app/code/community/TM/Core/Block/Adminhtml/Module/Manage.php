@@ -1,17 +1,17 @@
 <?php
 
-class TM_Core_Block_Adminhtml_Module_Upgrade extends Mage_Adminhtml_Block_Widget_Form_Container
+class TM_Core_Block_Adminhtml_Module_Manage extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
         $this->_objectId   = 'id';
         $this->_blockGroup = 'tmcore';
         $this->_controller = 'adminhtml_module';
-        $this->_mode       = 'upgrade';
+        $this->_mode       = 'manage';
 
         parent::__construct();
 
-        $this->setData('form_action_url', $this->getUrl('*/*/upgradePost'));
+        $this->setData('form_action_url', $this->getUrl('*/*/run'));
         $this->_updateButton('save', 'label', Mage::helper('tmcore')->__('Run'));
         $this->_removeButton('delete');
     }
@@ -42,10 +42,5 @@ class TM_Core_Block_Adminhtml_Module_Upgrade extends Mage_Adminhtml_Block_Widget
             $model->getCode(),
             $model->getVersion()
         );
-    }
-
-    public function getSkipUrl()
-    {
-        return $this->getUrl('*/*/skip', array($this->_objectId => $this->getRequest()->getParam($this->_objectId)));
     }
 }

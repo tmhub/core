@@ -11,17 +11,17 @@
         <block type="tmcore/adminhtml_module_grid" name="root" output="toHtml"/>
     </adminhtml_tmcore_module_grid>
 
-    <adminhtml_tmcore_module_upgrade>
+    <adminhtml_tmcore_module_manage>
         <reference name="content">
-            <block type="tmcore/adminhtml_module_upgrade" name="module.upgrade"/>
+            <block type="tmcore/adminhtml_module_manage" name="module.manage"/>
         </reference>
         <reference name="left">
-            <block type="tmcore/adminhtml_module_upgrade_tabs" name="tmcore_module_upgrade_tabs">
-                <block type="tmcore/adminhtml_module_upgrade_tab_main" name="tmcore_module_upgrade_tab_main" />
-                <action method="addTab"><name>main_section</name><block>tmcore_module_upgrade_tab_main</block></action>
+            <block type="tmcore/adminhtml_module_manage_tabs" name="tmcore_module_manage_tabs">
+                <block type="tmcore/adminhtml_module_manage_tab_main" name="tmcore_module_manage_tab_main" />
+                <action method="addTab"><name>main_section</name><block>tmcore_module_manage_tab_main</block></action>
             </block>
         </reference>
-    </adminhtml_tmcore_module_upgrade>
+    </adminhtml_tmcore_module_manage>
 
     <tmcore_popup>
         <reference name="head">
