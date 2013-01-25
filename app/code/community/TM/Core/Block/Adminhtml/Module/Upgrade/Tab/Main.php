@@ -49,12 +49,26 @@ class TM_Core_Block_Adminhtml_Module_Upgrade_Tab_Main
             'legend' => Mage::helper('tmcore')->__('Install and Reinstall Information'),
             'class'  => 'fieldset-wide'
         ));
+
         $fieldset->addField('code', 'hidden', array(
             'name' => 'id'
         ));
-        $fieldset->addField('store_ids', 'hidden', array(
-            // 'name' => 'store_ids'
-        ));
+
+        $remote = Mage::registry('tmcore_module_remote');
+        if ($remote && ($link = $remote->getIdentityKeyLink())) { // if module key is required
+            $fieldset->addField('identity_key', 'textarea', array(
+                'name'  => 'identity_key',
+                'label' => Mage::helper('tmcore')->__('Identity Key'),
+                'title' => Mage::helper('tmcore')->__('Identity Key'),
+                'note'  => Mage::helper('tmcore')->__(
+                    'You can grab your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
+                    $link,
+                    $link,
+                    $link
+                )
+            ));
+        }
+
         $field = $fieldset->addField('store_id', 'multiselect', array(
             'name'   => 'stores[]',
             'label'  => Mage::helper('tmcore')->__('Select stores to install or reinstall module'),
@@ -64,13 +78,15 @@ class TM_Core_Block_Adminhtml_Module_Upgrade_Tab_Main
         $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
         $field->setRenderer($renderer);
 
-        $fieldset->addField('installed_stores_info', 'label', array(
-            // 'name'     => 'installed_stores_info',
-            'label'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
-            'title'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
-            'value'    => implode(", ", array_intersect_key($stores, array_flip($model->getStores()))),
-            'readonly' => 1
-        ));
+        if ($installedStores = $model->getStores()) {
+            $fieldset->addField('installed_stores_info', 'label', array(
+                // 'name'     => 'installed_stores_info',
+                'label'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
+                'title'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
+                'value'    => implode(", ", array_intersect_key($stores, array_flip($installedStores))),
+                'readonly' => 1
+            ));
+        }
 
         $form->addValues($model->getData());
         $this->setForm($form);

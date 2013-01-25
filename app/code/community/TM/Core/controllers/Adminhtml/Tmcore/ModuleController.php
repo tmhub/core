@@ -31,9 +31,15 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $this->_initAction()
             ->_addBreadcrumb(Mage::helper('tmcore')->__('Upgrade'), Mage::helper('tmcore')->__('Upgrade'));
 
+        $id = $this->getRequest()->getParam('id');
         $module = Mage::getModel('tmcore/module');
-        $module->load($this->getRequest()->getParam('id'));
+        $module->load($id);
         Mage::register('tmcore_module', $module);
+
+        // load remote module information
+        $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
+            ->getItemById($id);
+        Mage::register('tmcore_module_remote', $remote);
 
         $this->renderLayout();
     }
@@ -53,17 +59,12 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
          * @var TM_Core_Model_Module
          */
         $module = Mage::getModel('tmcore/module');
-        $module->load($this->getRequest()->getParam('id'));
-        if (!$module->hasUpgradesDir()) {
-            Mage::getSingleton('adminhtml/session')->addError(Mage::helper('tmcore')->__("Module upgrade files are not found"));
-            $this->_redirect('*/*/');
-            return;
-        }
-
-        $module->setSkipUpgrade($this->getRequest()->getPost('skip_upgrade', false))
+        $module->load($this->getRequest()->getParam('id'))
+            ->setSkipUpgrade($this->getRequest()->getPost('skip_upgrade', false))
             ->setNewStores($this->getRequest()->getPost('stores', array()))
             ->setIdentityKey($this->getRequest()->getParam('identity_key'))
             ->up();
+
         Mage::app()->cleanCache();
         Mage::dispatchEvent('adminhtml_cache_flush_system');
 

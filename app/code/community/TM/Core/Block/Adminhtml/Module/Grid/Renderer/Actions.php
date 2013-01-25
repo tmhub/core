@@ -33,10 +33,10 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
         }
 
         // module always could be installed on new store or store view.
-        if ($row->hasUpgradesDir()) {
+        if ($row->hasUpgradesDir() || $row->getIdentityKeyLink()) {
 //            if (!$row->isInstalled()) {
-                $title = Mage::helper('tmcore')->__('Install');
-                $mode = 'install';
+                $title = Mage::helper('tmcore')->__('Manage');
+                // $mode = 'install';
 //            } else {
 //                $title = Mage::helper('tmcore')->__('Upgrade');
 //                $mode = 'upgrade';

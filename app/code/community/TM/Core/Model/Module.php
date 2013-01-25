@@ -221,6 +221,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         foreach ($this->getDepends() as $moduleCode) {
             $this->_getModuleObject($moduleCode)->up();
         }
+        $saved = false;
 
         // upgrade currently installed version to the latest data_version
         if (count($oldStores)) {
@@ -232,6 +233,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
                         ->run();
                 }
                 $this->setDataVersion($version)->save();
+                $saved = true;
             }
         }
 
@@ -242,7 +244,12 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
                     ->setStoreIds($newStores)
                     ->run();
                 $this->setDataVersion($version)->save();
+                $saved = true;
             }
+        }
+
+        if (!$saved) {
+            $this->save(); // identity key could be updated without running the upgrades
         }
     }
 
