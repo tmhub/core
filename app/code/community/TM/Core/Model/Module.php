@@ -230,7 +230,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
                 if (!$this->getSkipUpgrade()) {
                     $this->getUpgradeObject($version)
                         ->setStoreIds($oldStores)
-                        ->run();
+                        ->upgrade();
                 }
                 $this->setDataVersion($version)->save();
                 $saved = true;
@@ -242,7 +242,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             foreach ($this->getUpgradesToRun(0) as $version) {
                 $this->getUpgradeObject($version)
                     ->setStoreIds($newStores)
-                    ->run();
+                    ->upgrade();
                 $this->setDataVersion($version)->save();
                 $saved = true;
             }

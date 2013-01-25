@@ -69,7 +69,7 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
         return $this->_storeIds;
     }
 
-    public function run()
+    public function upgrade()
     {
         foreach ($this->getOperations() as $operation => $instructions) {
             $method = 'run' . ucfirst($operation);
