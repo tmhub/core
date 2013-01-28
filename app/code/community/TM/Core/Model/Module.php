@@ -6,6 +6,9 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     const VERSION_OUTDATED   = 2; // new upgrades are avaialble
     const VERSION_DEPRECATED = 3; // new version is avaialble but now uploaded
 
+    const XML_USE_HTTPS_PATH    = 'tmcore/license/use_https';
+    const XML_VALIDATE_URL_PATH = 'tmcore/license/url';
+
     /**
      * @var TM_Core_Model_Module_ErrorLogger
      */
@@ -73,6 +76,122 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $this->setStoreIds(implode(',', array_unique($stores)));
         }
         return parent::_beforeSave();
+    }
+
+    /**
+     * Retrieve module remote information
+     *
+     * @return Varien_Object
+     */
+    public function getRemote()
+    {
+        if (null === $this->getData('remote')) {
+            $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
+                ->getItemById($this->getId());
+
+            $this->setData('remote', $remote);
+        }
+        return $this->getData('remote');
+    }
+
+    /**
+     * Retreive is validation required flag.
+     * True, if remote has identity_key_link
+     *
+     * @return boolean
+     */
+    public function isValidationRequired()
+    {
+        return $this->getRemote() && $this->getRemote()->getIdentityKeyLink();
+    }
+
+    /**
+     * Validates module license
+     *
+     * @return true|array Response
+     * <pre>
+     *  error  : error_message[optional]
+     *  success: true|false
+     * </pre>
+     */
+    public function validateLicense()
+    {
+        if (!$this->isValidationRequired()) {
+            return true;
+        }
+
+        $key = trim($this->getIdentityKey());
+        if (empty($key)) {
+            return array(
+                'error' => 'Identity key is required'
+            );
+        }
+
+        // key format is: encoded_site:secret_key:optional_suffix
+        $parts = explode(':', $key);
+        if (count($parts) < 3) {
+            return array(
+                'error' => 'Identity key format is not valid'
+            );
+        }
+        list($site, $secret, $suffix) = explode(':', $key);
+
+        // @todo implement cached response storage
+        // $responseBody = $this->_getCachedQuotes($params);
+        try {
+            $client  = new Zend_Http_Client();
+            $adapter = new Zend_Http_Client_Adapter_Curl();
+            $client->setAdapter($adapter);
+            $client->setUri($this->_getValidateUri($site));
+            $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
+            $client->setParameterGet('key', $secret);
+            $client->setParameterGet('suffix', $suffix);
+            $response = $client->request();
+            $responseBody = $response->getBody();
+            // $this->_setCachedQuotes($params, $responseBody);
+        } catch (Exception $e) {
+            return array(
+                'error' => 'Validation error: ' . $e->getMessage()
+            );
+        }
+
+        return $this->_parseResponse($responseBody);
+    }
+
+    /**
+     * Parse server response
+     *
+     * @param string $response
+     * <pre>
+     * "{success: true}" or "{error: error_message}"
+     * </pre>
+     */
+    protected function _parseResponse($response)
+    {
+        try {
+            $result = Mage::helper('core')->jsonDecode($response);
+            if (!is_array($result)) {
+                throw new Exception('Decoding failed');
+            }
+        } catch (Exception $e) {
+            $result = array(
+                'error' => 'Validation response parsing error: ' . $e->getMessage()
+            );
+        }
+        return $result;
+    }
+
+    /**
+     * Retrieve validation url according to the encoded $site
+     *
+     * @param string $site Base64 encoded site url [example.com]
+     */
+    protected function _getValidateUri($site)
+    {
+        $site = base64_decode($site);
+        return (Mage::getStoreConfigFlag(self::XML_USE_HTTPS_PATH) ? 'https://' : 'http://')
+            . rtrim($site, '/ ')
+            . Mage::getStoreConfig(self::XML_VALIDATE_URL_PATH);
     }
 
 

@@ -54,10 +54,11 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
             'name' => 'id'
         ));
 
-        $remote = Mage::registry('tmcore_module_remote');
-        if ($remote && ($link = $remote->getIdentityKeyLink())) { // if module key is required
+        if ($model->isValidationRequired()) {
+            $link = $model->getRemote()->getIdentityKeyLink();
             $fieldset->addField('identity_key', 'textarea', array(
                 'name'  => 'identity_key',
+                'required' => true,
                 'label' => Mage::helper('tmcore')->__('Identity Key'),
                 'title' => Mage::helper('tmcore')->__('Identity Key'),
                 'note'  => Mage::helper('tmcore')->__(
@@ -69,8 +70,8 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
             ));
         }
 
-        $field = $fieldset->addField('store_id', 'multiselect', array(
-            'name'   => 'stores[]',
+        $field = $fieldset->addField('new_stores', 'multiselect', array(
+            'name'   => 'new_stores[]',
             'label'  => Mage::helper('tmcore')->__('Select stores to install or reinstall module'),
             'title'  => Mage::helper('tmcore')->__('Select stores to install or reinstall module'),
             'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true)

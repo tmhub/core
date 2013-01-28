@@ -28,19 +28,18 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
 
     public function manageAction()
     {
-        $this->_initAction()
-            ->_addBreadcrumb(Mage::helper('tmcore')->__('Manage'), Mage::helper('tmcore')->__('Manage'));
-
-        $id = $this->getRequest()->getParam('id');
         $module = Mage::getModel('tmcore/module');
-        $module->load($id);
+        $module->load($this->getRequest()->getParam('id'));
+
+        $data = Mage::getSingleton('adminhtml/session')->getFormData(true);
+        if (!empty($data)) {
+            $module->addData($data);
+        }
+
         Mage::register('tmcore_module', $module);
 
-        // load remote module information
-        $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
-            ->getItemById($id);
-        Mage::register('tmcore_module_remote', $remote);
-
+        $this->_initAction()
+            ->_addBreadcrumb(Mage::helper('tmcore')->__('Manage'), Mage::helper('tmcore')->__('Manage'));
         $this->renderLayout();
     }
 
@@ -56,9 +55,17 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $module = Mage::getModel('tmcore/module');
         $module->load($this->getRequest()->getParam('id'))
             ->setSkipUpgrade($this->getRequest()->getPost('skip_upgrade', false))
-            ->setNewStores($this->getRequest()->getPost('stores', array()))
-            ->setIdentityKey($this->getRequest()->getParam('identity_key'))
-            ->up();
+            ->setNewStores($this->getRequest()->getPost('new_stores', array()))
+            ->setIdentityKey($this->getRequest()->getParam('identity_key'));
+
+        $result = $module->validateLicense();
+        if (is_array($result) && isset($result['error'])) {
+            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+            Mage::getSingleton('adminhtml/session')->addError($result['error']);
+            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
+        }
+
+        $module->up();
 
         Mage::app()->cleanCache();
         Mage::dispatchEvent('adminhtml_cache_flush_system');
@@ -75,10 +82,12 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
                     Mage::getSingleton('adminhtml/session')->addError($message);
                 }
             }
-            $this->_redirect('*/*/manage', array('id' => $module->getId()));
-        } else {
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been saved"));
-            $this->_redirect('*/*/');
+            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
         }
+
+        Mage::getSingleton('adminhtml/session')->setFormData(false);
+        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been saved"));
+        $this->_redirect('*/*/');
     }
 }

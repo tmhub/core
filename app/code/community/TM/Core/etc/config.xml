@@ -128,6 +128,10 @@
 
     <default>
         <tmcore>
+            <license>
+                <use_https>0</use_https>
+                <url>/validate</url>
+            </license>
             <notification>
                 <feed_url>templates-master.com/notifier</feed_url>
                 <use_https>0</use_https>
