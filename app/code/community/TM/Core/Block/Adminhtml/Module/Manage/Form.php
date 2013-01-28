@@ -1,6 +1,6 @@
 <?php
 
-class TM_Core_Block_Adminhtml_Module_Upgrade_Form extends Mage_Adminhtml_Block_Widget_Form
+class TM_Core_Block_Adminhtml_Module_Manage_Form extends Mage_Adminhtml_Block_Widget_Form
 {
     protected function _prepareForm()
     {

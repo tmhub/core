@@ -13,12 +13,29 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
      */
     public function loadData($printQuery = false, $logQuery = false)
     {
-        if (true || $this->isLoaded()) { // @todo
+        if ($this->isLoaded()) { // @todo
             return $this;
         }
 
         // data received from https://templates-master.com/modules
         $modules = array(
+            'TM_Core' => array(
+                'code'          => 'TM_Core',
+                'version'       => '1.0.1',
+                'changelog'     => "1.0.1
+Modules page added with latest module version
+Automatic installer added
+
+1.0.0
+Configuration section is now available
+List of installed modules
+Contact link
+Notifier added
+",
+                'link'          => 'http://templates-master.com/magento-ajaxpro.html',
+                'download_link' => 'https://templates-master.com/downloadable/customer/products/',
+                'identity_key_link'  => 'https://templates-master.com/license/customer/identity/'
+            ),
             'TM_AjaxPro' => array(
                 'code'          => 'TM_AjaxPro',
                 'version'       => '2.1.0',
@@ -51,7 +68,8 @@ Bugfix
 1.0.0
 Release",
                 'link'          => 'http://templates-master.com/magento-ajaxpro.html',
-                'download_link' => 'https://templates-master.com/downloadable/customer/products/'
+                'download_link' => 'https://templates-master.com/downloadable/customer/products/',
+                'identity_key_link'  => ''
             ),
             'TM_AjaxSearch' => array(
                 'code'          => 'TM_AjaxSearch',

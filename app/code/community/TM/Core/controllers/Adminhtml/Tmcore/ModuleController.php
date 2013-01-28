@@ -26,43 +26,47 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $this->renderLayout();
     }
 
-    public function upgradeAction()
+    public function manageAction()
     {
-        $this->_initAction()
-            ->_addBreadcrumb(Mage::helper('tmcore')->__('Upgrade'), Mage::helper('tmcore')->__('Upgrade'));
-
         $module = Mage::getModel('tmcore/module');
         $module->load($this->getRequest()->getParam('id'));
+
+        $data = Mage::getSingleton('adminhtml/session')->getFormData(true);
+        if (!empty($data)) {
+            $module->addData($data);
+        }
+
         Mage::register('tmcore_module', $module);
 
+        $this->_initAction()
+            ->_addBreadcrumb(Mage::helper('tmcore')->__('Manage'), Mage::helper('tmcore')->__('Manage'));
         $this->renderLayout();
     }
 
-    public function skipAction()
-    {
-        //
-    }
-
-    public function upgradePostAction()
+    public function runAction()
     {
         if (!$this->getRequest()->isPost()) {
             $this->_redirect('*/*/index');
         }
 
-        $stores = $this->getRequest()->getPost('stores', array());
-
         /**
          * @var TM_Core_Model_Module
          */
         $module = Mage::getModel('tmcore/module');
-        $module->load($this->getRequest()->getParam('id'));
-        if (!$module->hasUpgradesToRun()) {
-            Mage::getSingleton('adminhtml/session')->addError(Mage::helper('tmcore')->__("Module upgrade files are not found"));
-            $this->_redirect('*/*/');
-            return;
+        $module->load($this->getRequest()->getParam('id'))
+            ->setSkipUpgrade($this->getRequest()->getPost('skip_upgrade', false))
+            ->setNewStores($this->getRequest()->getPost('new_stores', array()))
+            ->setIdentityKey($this->getRequest()->getParam('identity_key'));
+
+        $result = $module->validateLicense();
+        if (is_array($result) && isset($result['error'])) {
+            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+            Mage::getSingleton('adminhtml/session')->addError($result['error']);
+            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
         }
 
-        $module->addStores($stores)->up();
+        $module->up();
+
         Mage::app()->cleanCache();
         Mage::dispatchEvent('adminhtml_cache_flush_system');
 
@@ -78,10 +82,12 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
                     Mage::getSingleton('adminhtml/session')->addError($message);
                 }
             }
-            $this->_redirect('*/*/upgrade', array('id' => $module->getId()));
-        } else {
-            Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been installed"));
-            $this->_redirect('*/*/');
+            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
         }
+
+        Mage::getSingleton('adminhtml/session')->setFormData(false);
+        Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been saved"));
+        $this->_redirect('*/*/');
     }
 }

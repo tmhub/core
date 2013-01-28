@@ -29,7 +29,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         ));
 
         $this->addColumn('version', array(
-            'header' => Mage::helper('tmcore')->__('Installed Version'),
+            'header' => Mage::helper('tmcore')->__('Local Version'),
             'align'  => 'right',
             'index'  => 'version',
             'width'  => '80px'
@@ -53,7 +53,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
         $this->addColumn('actions', array(
             'header'   => Mage::helper('adminnotification')->__('Actions'),
-            'width'    => '100px',
+            'width'    => '200px',
             'filter'   => false,
             'sortable' => false,
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'
@@ -69,6 +69,6 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/upgrade', array('id' => $row->getId()));
+        return $this->getUrl('*/*/manage', array('id' => $row->getId()));
     }
 }

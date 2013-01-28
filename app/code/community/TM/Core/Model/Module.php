@@ -6,49 +6,13 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     const VERSION_OUTDATED   = 2; // new upgrades are avaialble
     const VERSION_DEPRECATED = 3; // new version is avaialble but now uploaded
 
+    const XML_USE_HTTPS_PATH    = 'tmcore/license/use_https';
+    const XML_VALIDATE_URL_PATH = 'tmcore/license/url';
+
     /**
      * @var TM_Core_Model_Module_ErrorLogger
      */
     protected static $_messageLogger = null;
-
-    protected function _construct()
-    {
-        $this->_init('tmcore/module');
-    }
-
-    /**
-     * Check for store_ids type added
-     *
-     * @return Mage_Core_Model_Abstract
-     */
-    protected function _beforeSave()
-    {
-        $stores = $this->getStoreIds();
-        if (is_array($stores)) {
-            $this->setStoreIds(implode(',', array_unique($stores)));
-        }
-        return parent::_beforeSave();
-    }
-
-    public function load($id, $field=null)
-    {
-        parent::load();
-
-        $xml = Mage::getConfig()->getNode('modules/' . $id);
-        $this->setId($id);
-        $this->setDepends(array());
-        if ($xml) {
-            $data = $xml->asCanonicalArray();
-            if (isset($data['depends']) && is_array($data['depends'])) {
-                $data['depends'] = array_keys($data['depends']);
-            } else {
-                $data['depends'] = array();
-            }
-            $this->addData($data);
-        }
-
-        return $this;
-    }
 
     /**
      * Retrieve Severity collection array
@@ -73,91 +37,231 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         return $versionStatuses;
     }
 
-    /**
-     * @param mixed $ids
-     */
-    public function setStoreIds($ids)
+    protected function _construct()
     {
-        if (is_array($ids)) {
-            return $this->addStores($ids);
-        }
-        return $this->setData('store_ids', $ids);
+        $this->_init('tmcore/module');
     }
 
-    /**
-     * Set the stores to be installed on.
-     * If module is already installed on some stores, then these stores
-     * will be merged with received ids
-     *
-     * @param array $ids
-     * @return TM_Core_Model_Module
-     */
-    public function addStores(array $ids)
+    public function load($id, $field=null)
     {
-        $installedStores = $this->getStoreIds();
-        if (!count($installedStores)) {
-            $installedStores = array();
-        } elseif (!is_array($installedStores)) {
-            $installedStores = explode(',', $installedStores);
+        parent::load($id, $field);
+
+        $xml = Mage::getConfig()->getNode('modules/' . $id);
+        $this->setId($id);
+        $this->setDepends(array());
+        if ($xml) {
+            $data = $xml->asCanonicalArray();
+            if (isset($data['depends']) && is_array($data['depends'])) {
+                $data['depends'] = array_keys($data['depends']);
+            } else {
+                $data['depends'] = array();
+            }
+            $this->addData($data);
         }
-        $merged = array_merge($ids, $installedStores);
-        $this->setData('store_ids', implode(',', array_unique($merged)));
 
         return $this;
     }
 
     /**
-     * Retieve store ids as array
+     * Merge new_store_ids and store_ids arrays
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _beforeSave()
+    {
+        $oldStores = $this->getOldStores();
+        $newStores = $this->getNewStoreIds();
+        if (is_array($newStores)) {
+            $stores = array_merge($oldStores, $newStores);
+            $this->setStoreIds(implode(',', array_unique($stores)));
+        }
+        return parent::_beforeSave();
+    }
+
+    /**
+     * Retrieve module remote information
+     *
+     * @return Varien_Object
+     */
+    public function getRemote()
+    {
+        if (null === $this->getData('remote')) {
+            $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
+                ->getItemById($this->getId());
+
+            $this->setData('remote', $remote);
+        }
+        return $this->getData('remote');
+    }
+
+    /**
+     * Retreive is validation required flag.
+     * True, if remote has identity_key_link
+     *
+     * @return boolean
+     */
+    public function isValidationRequired()
+    {
+        return $this->getRemote() && $this->getRemote()->getIdentityKeyLink();
+    }
+
+    /**
+     * Validates module license
+     *
+     * @return true|array Response
+     * <pre>
+     *  error  : error_message[optional]
+     *  success: true|false
+     * </pre>
+     */
+    public function validateLicense()
+    {
+        if (!$this->isValidationRequired()) {
+            return true;
+        }
+
+        $key = trim($this->getIdentityKey());
+        if (empty($key)) {
+            return array(
+                'error' => 'Identity key is required'
+            );
+        }
+
+        // key format is: encoded_site:secret_key:optional_suffix
+        $parts = explode(':', $key);
+        if (count($parts) < 3) {
+            return array(
+                'error' => 'Identity key format is not valid'
+            );
+        }
+        list($site, $secret, $suffix) = explode(':', $key);
+
+        // @todo implement cached response storage
+        // $responseBody = $this->_getCachedQuotes($params);
+        try {
+            $client  = new Zend_Http_Client();
+            $adapter = new Zend_Http_Client_Adapter_Curl();
+            $client->setAdapter($adapter);
+            $client->setUri($this->_getValidateUri($site));
+            $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
+            $client->setParameterGet('key', $secret);
+            $client->setParameterGet('suffix', $suffix);
+            $response = $client->request();
+            $responseBody = $response->getBody();
+            // $this->_setCachedQuotes($params, $responseBody);
+        } catch (Exception $e) {
+            return array(
+                'error' => 'Validation error: ' . $e->getMessage()
+            );
+        }
+
+        return $this->_parseResponse($responseBody);
+    }
+
+    /**
+     * Parse server response
+     *
+     * @param string $response
+     * <pre>
+     * "{success: true}" or "{error: error_message}"
+     * </pre>
+     */
+    protected function _parseResponse($response)
+    {
+        try {
+            $result = Mage::helper('core')->jsonDecode($response);
+            if (!is_array($result)) {
+                throw new Exception('Decoding failed');
+            }
+        } catch (Exception $e) {
+            $result = array(
+                'error' => 'Validation response parsing error: ' . $e->getMessage()
+            );
+        }
+        return $result;
+    }
+
+    /**
+     * Retrieve validation url according to the encoded $site
+     *
+     * @param string $site Base64 encoded site url [example.com]
+     */
+    protected function _getValidateUri($site)
+    {
+        $site = base64_decode($site);
+        return (Mage::getStoreConfigFlag(self::XML_USE_HTTPS_PATH) ? 'https://' : 'http://')
+            . rtrim($site, '/ ')
+            . Mage::getStoreConfig(self::XML_VALIDATE_URL_PATH);
+    }
+
+
+    /**
+     * Set the stores, where the module should be installed or reinstalled
+     *
+     * @param array $ids
+     * @return TM_Core_Model_Module
+     */
+    public function setNewStores(array $ids)
+    {
+        // $oldStores = $this->getOldStores();
+        // $newStores = array_diff($ids, $oldStores);
+        // $this->setData('new_store_ids', array_unique($newStores));
+
+        $this->setData('new_store_ids', array_unique($ids));
+        return $this;
+    }
+
+    /**
+     * Retieve store ids, where the module is already installed
      *
      * @return array
      */
-    public function getStores()
+    public function getOldStores()
     {
         $ids = $this->getStoreIds();
-        if (!count($ids)) {
+        if (null === $ids || '' === $ids) {
             return array();
-        } elseif (!is_array($ids)) {
+        }
+        if (!is_array($ids)) {
             $ids = explode(',', $ids);
         }
         return $ids;
     }
 
-    public function isInstalled()
-    {
-        return false;// we always can install the extension to the new stores
-        return $this->getLicenseKey();
-    }
-
-    public function hasUpgradesToRun()
-    {
-        return (bool) $this->getUpgradesToRun();
-    }
-
     /**
-     * Retrive the list of all module upgrade filenames
-     * sorted by version_compare
+     * Retieve store ids, where the module is already installed
      *
      * @return array
      */
-    public function getUpgrades()
+    public function getStores()
     {
-        try {
-            $dir = new DirectoryIterator($this->getUpgradesPath());
-        } catch (Exception $e) {
-            // module doesn't has upgrades
-            return array();
-        }
+        return $this->getOldStores();
+    }
 
-        $upgrades = array();
-        foreach ($dir as $file) {
-            $file = $file->getFilename();
-            if (false === strstr($file, '.php')) {
-                continue;
-            }
-            $upgrades[] = substr($file, 0, -4);
-        }
-        usort($upgrades, 'version_compare');
-        return $upgrades;
+    /**
+     * Retrieve store ids to install module on
+     *
+     * @return array
+     */
+    public function getNewStores()
+    {
+        return $this->getNewStoreIds();
+    }
+
+    public function isInstalled()
+    {
+        return false;// we always can install the extension to the new stores
+        // return $this->getLicenseKey();
+    }
+
+    /**
+     * Checks is the upgrades directory is exists in the module
+     *
+     * @return boolean
+     */
+    public function hasUpgradesDir()
+    {
+        return is_readable($this->getUpgradesPath());
     }
 
     /**
@@ -168,10 +272,9 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      * are available
      *
      * @param string $from
-     * @param string $to
      * @return array
      */
-    public function getUpgradesToRun($from = null, $to = null)
+    public function getUpgradesToRun($from = null)
     {
         if (null === $from) {
             $from = $this->getDataVersion();
@@ -189,30 +292,83 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     }
 
     /**
+     * Retrive the list of all module upgrade filenames
+     * sorted by version_compare
+     *
+     * @return array
+     */
+    public function getUpgrades()
+    {
+        $upgrades = $this->getData('upgrades');
+        if (is_array($upgrades)) {
+            return $upgrades;
+        }
+
+        try {
+            $dir = new DirectoryIterator($this->getUpgradesPath());
+        } catch (Exception $e) {
+            // module doesn't has upgrades
+            return array();
+        }
+
+        $upgrades = array();
+        foreach ($dir as $file) {
+            $file = $file->getFilename();
+            if (false === strstr($file, '.php')) {
+                continue;
+            }
+            $upgrades[] = substr($file, 0, -4);
+        }
+        usort($upgrades, 'version_compare');
+        $this->setData('upgrades', $upgrades);
+        return $upgrades;
+    }
+
+    /**
      * Run the module upgrades. Depends run first.
      *
-     * @param $from
-     * @param @to
      * @return void
      */
-    public function up($from = null, $to = null)
+    public function up()
     {
-        $stores = $this->getStores();
-        if (!count($stores)) {
+        $oldStores = $this->getOldStores(); // update to newest data_version
+        $newStores = $this->getNewStores(); // run all upgrade files
+        if (!count($oldStores) && !count($newStores)) {
             return;
         }
 
         foreach ($this->getDepends() as $moduleCode) {
-            $module = $this->_getModuleObject($moduleCode);
-            foreach ($module->getUpgradesToRun() as $version) {
-                $module->getUpgradeObject($version)->run();
-                $module->setDataVersion($version)->save();
+            $this->_getModuleObject($moduleCode)->up();
+        }
+        $saved = false;
+
+        // upgrade currently installed version to the latest data_version
+        if (count($oldStores)) {
+            foreach ($this->getUpgradesToRun() as $version) {
+                // customer able to skip upgrading data of installed modules
+                if (!$this->getSkipUpgrade()) {
+                    $this->getUpgradeObject($version)
+                        ->setStoreIds($oldStores)
+                        ->upgrade();
+                }
+                $this->setDataVersion($version)->save();
+                $saved = true;
             }
         }
 
-        foreach ($this->getUpgradesToRun($from, $to) as $version) {
-            $this->getUpgradeObject($version)->run();
-            $this->setDataVersion($version)->save();
+        // install module to the new stores
+        if (count($newStores)) {
+            foreach ($this->getUpgradesToRun(0) as $version) {
+                $this->getUpgradeObject($version)
+                    ->setStoreIds($newStores)
+                    ->upgrade();
+                $this->setDataVersion($version)->save();
+                $saved = true;
+            }
+        }
+
+        if (!$saved) {
+            $this->save(); // identity key could be updated without running the upgrades
         }
     }
 
@@ -228,69 +384,6 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             self::$_messageLogger = Mage::getSingleton('tmcore/module_messageLogger');
         }
         return self::$_messageLogger;
-    }
-
-    /**
-     * This method is used to get the operations for preview only
-     *
-     * @see getUpgradeOperationsAsString
-     * @return array
-     */
-    protected function _getUpgradeOperations($from = null, $to = null)
-    {
-        $operations = array();
-
-        foreach ($this->getDepends() as $moduleCode) {
-            $module = $this->_getModuleObject($moduleCode);
-            $operations[$moduleCode] = array();
-            foreach ($module->getUpgradesToRun() as $upgrade) {
-                if (!isset($operations[$moduleCode][$upgrade])) {
-                    $operations[$moduleCode][$upgrade] = array();
-                }
-                $operations[$moduleCode][$upgrade] = array_merge_recursive(
-                    $operations[$moduleCode][$upgrade],
-                    $module->getUpgradeObject($upgrade)->getOperations()
-                );
-            }
-        }
-        $operations[$this->getId()] = array();
-        foreach ($this->getUpgradesToRun($from, $to) as $upgrade) {
-            if (!isset($operations[$this->getId()][$upgrade])) {
-                $operations[$this->getId()][$upgrade] = array();
-            }
-            $operations[$this->getId()][$upgrade] = array_merge_recursive(
-                $operations[$this->getId()][$upgrade],
-                $this->getUpgradeObject($upgrade)->getOperations()
-            );
-        }
-        return $operations;
-    }
-
-    /**
-     * Retrieve upgrade operations as formatted string.
-     * Used to show the upgrade operations inside textarea field.
-     *
-     * @param $from
-     * @param @to
-     * @return string
-     */
-    public function getUpgradeOperationsAsString($from = null, $to = null)
-    {
-        $result = array();
-        $indent = '    ';
-        foreach ($this->_getUpgradeOperations($from, $to) as $module => $versions) {
-            $result[] = $module;
-            foreach ($versions as $version => $sections) {
-                $result[] = $indent . $version;
-                foreach ($sections as $section => $operations) {
-                    $result[] = str_repeat($indent, 2) . $section;
-                    foreach ($operations as $key => $value) {
-                        $result[] = str_repeat($indent, 3) . $key . ': ' . $value;
-                    }
-                }
-            }
-        }
-        return implode("\n", $result);
     }
 
     /**
@@ -318,7 +411,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         require_once $this->getUpgradesPath() . "/{$version}.php";
         $className = $this->_getUpgradeClassName($version);
         $upgrade = new $className();
-        $upgrade->setStoreIds($this->getStores())->setModule($this);
+        $upgrade->setModule($this);
         return $upgrade;
     }
 
@@ -338,10 +431,23 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             . 'upgrades';
     }
 
+    /**
+     * Returns loded module object with copied new_store_ids and skip_upgrade
+     * instructions into it
+     *
+     * @return TM_Core_Model_Module
+     */
     protected function _getModuleObject($code)
     {
-        return Mage::getModel('tmcore/module')
-            ->load($code)
-            ->addStores($this->getStores());
+        $module = Mage::getModel('tmcore/module')->load($code)
+            ->setNewStores($this->getNewStores())
+            ->setSkipUpgrade($this->getSkipUpgrade());
+
+        if (!$module->getIdentityKey()) {
+            // dependent modules will have the same license if not exists
+            $module->setIdentityKey($this->getIdentityKey());
+        }
+
+        return $module;
     }
 }
