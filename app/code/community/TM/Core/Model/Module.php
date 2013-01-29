@@ -85,6 +85,11 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function getRemote()
     {
+        // @todo remove next 3 lines
+        return new Varien_Object(array(
+            'identity_key_link' => 1
+        ));
+        // end of remove
         if (null === $this->getData('remote')) {
             $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
                 ->getItemById($this->getId());
