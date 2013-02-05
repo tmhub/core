@@ -32,9 +32,7 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
             );
         }
 
-        // module always could be installed on new store or store view.
-        // @todo remove true
-        if (true || $row->hasUpgradesDir() || $row->getIdentityKeyLink()) {
+        if ($row->hasUpgradesDir() || $row->getIdentityKeyLink()) {
             $links[] = sprintf(
                 '<a href="%s">%s</a>',
                 $this->getUrl('*/*/manage/', array('_current' => true, 'id' => $row->getId())),
