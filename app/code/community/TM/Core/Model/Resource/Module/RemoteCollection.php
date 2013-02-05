@@ -2,6 +2,8 @@
 
 class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collection
 {
+    const XML_FEED_URL_PATH = 'tmcore/modules/feed_url';
+
     protected $_collectedModules = array();
 
     /**
@@ -13,22 +15,60 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
      */
     public function loadData($printQuery = false, $logQuery = false)
     {
-        if ($this->isLoaded()) { // @todo
+        if ($this->isLoaded()) {
             return $this;
         }
 
-        // data received from https://templates-master.com/modules
-        // @todo get data from feed
-        $modules = array(
-            'TM_ArgentoArgento' => array(
-                'code'          => 'TM_ArgentoArgento',
-                'version'       => '1.0.0',
-                'changelog'     => "",
-                'link'          => 'http://argentotheme.com',
-                'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                'identity_key_link'  => 'https://argentotheme.com/license/customer/identity/'
-            )
-        );
+        try {
+            $client  = new Zend_Http_Client();
+            $adapter = new Zend_Http_Client_Adapter_Curl();
+            $client->setAdapter($adapter);
+            $client->setUri($this->_getFeedUri());
+            $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
+            $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
+            $responseBody = $client->request()->getBody();
+            $modules      = Mage::helper('core')->jsonDecode($responseBody);
+            if (!is_array($modules)) {
+                throw new Exception('Decoding failed');
+            }
+        } catch (Exception $e) {
+            // @todo remove this fix and add error message
+            $modules = array(
+                'TM_Core' => array(
+                    'code'          => 'TM_Core',
+                    'version'       => '1.0.1',
+                    'changelog'     => '',
+                    'link'          => '',
+                    'download_link' => '',
+                    'identity_key_link' => ''
+                ),
+                'TM_License' => array(
+                    'code'          => 'TM_License',
+                    'version'       => '1.0.0',
+                    'changelog'     => '',
+                    'link'          => '',
+                    'download_link' => '',
+                    'identity_key_link' => ''
+                ),
+                'TM_Argento' => array(
+                    'code'          => 'TM_Argento',
+                    'version'       => '1.0.0',
+                    'changelog'     => '',
+                    'link'          => '',
+                    'download_link' => '',
+                    'identity_key_link' => ''
+                ),
+                'TM_ArgentoArgento' => array(
+                    'code'          => 'TM_ArgentoArgento',
+                    'version'       => '1.0.0',
+                    'changelog'     => "",
+                    'link'          => 'http://argentotheme.com',
+                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
+                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
+                )
+            );
+        }
+
         foreach ($modules as $moduleName => $values) {
             $values['id'] = $values['code'];
             $this->_collectedModules[$values['code']] = $values;
@@ -57,5 +97,12 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         }
 
         return $this;
+    }
+
+    protected function _getFeedUri()
+    {
+        $useHttps = Mage::getStoreConfigFlag(TM_Core_Model_Module::XML_USE_HTTPS_PATH);
+        return ($useHttps ? 'https://' : 'http://')
+            . Mage::getStoreConfig(self::XML_FEED_URL_PATH);
     }
 }

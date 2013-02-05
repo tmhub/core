@@ -85,11 +85,6 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function getRemote()
     {
-        // @todo remove next 3 lines
-        return new Varien_Object(array(
-            'identity_key_link' => 1
-        ));
-        // end of remove
         if (null === $this->getData('remote')) {
             $remote = Mage::getResourceModel('tmcore/module_remoteCollection')
                 ->getItemById($this->getId());
@@ -142,7 +137,6 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         list($site, $secret, $suffix) = explode(':', $key);
 
         // @todo implement cached response storage
-        // $responseBody = $this->_getCachedQuotes($params);
         try {
             $client  = new Zend_Http_Client();
             $adapter = new Zend_Http_Client_Adapter_Curl();
@@ -151,12 +145,13 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
             $client->setParameterGet('key', $secret);
             $client->setParameterGet('suffix', $suffix);
+            $client->setParameterGet('module', $this->getCode());
+            $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
             $response = $client->request();
             $responseBody = $response->getBody();
-            // $this->_setCachedQuotes($params, $responseBody);
         } catch (Exception $e) {
             return array(
-                'error' => 'Validation error: ' . $e->getMessage()
+                'error' => 'Response error: ' . $e->getMessage()
             );
         }
 
@@ -180,7 +175,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             }
         } catch (Exception $e) {
             $result = array(
-                'error' => 'Validation response parsing error: ' . $e->getMessage()
+                'error' => 'Sorry, try again in five minutes. Validation response parsing error: ' . $e->getMessage()
             );
         }
         return $result;
@@ -208,10 +203,6 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function setNewStores(array $ids)
     {
-        // $oldStores = $this->getOldStores();
-        // $newStores = array_diff($ids, $oldStores);
-        // $this->setData('new_store_ids', array_unique($newStores));
-
         $this->setData('new_store_ids', array_unique($ids));
         return $this;
     }
@@ -256,7 +247,6 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
     public function isInstalled()
     {
         return false;// we always can install the extension to the new stores
-        // return $this->getLicenseKey();
     }
 
     /**
@@ -310,7 +300,11 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         }
 
         try {
-            $dir = new DirectoryIterator($this->getUpgradesPath());
+            $dir = $this->getUpgradesPath();
+            if (!is_readable($dir)) {
+                return array();
+            }
+            $dir = new DirectoryIterator($dir);
         } catch (Exception $e) {
             // module doesn't has upgrades
             return array();

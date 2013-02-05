@@ -28,6 +28,10 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
 
     public function manageAction()
     {
+        if (!$this->getRequest()->getParam('id')) {
+            return $this->_redirect('*/*/index');
+        }
+
         $module = Mage::getModel('tmcore/module');
         $module->load($this->getRequest()->getParam('id'));
 
@@ -46,7 +50,7 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
     public function runAction()
     {
         if (!$this->getRequest()->isPost()) {
-            $this->_redirect('*/*/index');
+            return $this->_redirect('*/*/index');
         }
 
         /**

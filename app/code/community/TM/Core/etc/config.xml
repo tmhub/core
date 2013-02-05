@@ -128,9 +128,12 @@
 
     <default>
         <tmcore>
+            <modules>
+                <feed_url>templates-master.com/modules</feed_url>
+            </modules>
             <license>
                 <use_https>0</use_https>
-                <url>/validate</url>
+                <url>/license/validate</url>
             </license>
             <notification>
                 <feed_url>templates-master.com/notifier</feed_url>

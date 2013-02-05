@@ -35,25 +35,25 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
             'width'  => '80px'
         ));
 
-//        $this->addColumn('latest_version', array(
-//            'header' => Mage::helper('tmcore')->__('Latest Version'),
-//            'align'  => 'right',
-//            'index'  => 'latest_version',
-//            'width'  => '80px'
-//        ));
+        $this->addColumn('latest_version', array(
+            'header' => Mage::helper('tmcore')->__('Latest Version'),
+            'align'  => 'right',
+            'index'  => 'latest_version',
+            'width'  => '80px'
+        ));
 
-//        $this->addColumn('version_status', array(
-//            'header'   => Mage::helper('adminnotification')->__('Version Status'),
-//            'width'    => '60px',
-//            'index'    => 'version_status',
-//            'renderer' => 'tmcore/adminhtml_module_grid_renderer_versionStatus',
-//            'type'     => 'options',
-//            'options'  => Mage::getModel('tmcore/module')->getVersionStatuses()
-//        ));
+        $this->addColumn('version_status', array(
+            'header'   => Mage::helper('adminnotification')->__('Version Status'),
+            'width'    => '60px',
+            'index'    => 'version_status',
+            'renderer' => 'tmcore/adminhtml_module_grid_renderer_versionStatus',
+            'type'     => 'options',
+            'options'  => Mage::getModel('tmcore/module')->getVersionStatuses()
+        ));
 
         $this->addColumn('actions', array(
             'header'   => Mage::helper('adminnotification')->__('Actions'),
-            'width'    => '150px',
+            'width'    => '200px',
             'filter'   => false,
             'sortable' => false,
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'

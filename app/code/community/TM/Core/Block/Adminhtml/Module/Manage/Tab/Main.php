@@ -61,13 +61,12 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
                 'required' => true,
                 'label' => Mage::helper('tmcore')->__('Identity Key'),
                 'title' => Mage::helper('tmcore')->__('Identity Key'),
-                // @todo uncomment, when remote will be returned
-//                'note'  => Mage::helper('tmcore')->__(
-//                    'You can grab your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
-//                    $link,
-//                    $link,
-//                    $link
-//                )
+                'note'  => Mage::helper('tmcore')->__(
+                    'Get your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
+                    $link,
+                    $link,
+                    $link
+                )
             ));
         }
 
