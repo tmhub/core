@@ -17,9 +17,33 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
             return $this;
         }
 
-        // data received from https://templates-master.com/modules
+        // data received from https://templates-master.com/catalog/feed/
         // @todo get data from feed
         $modules = array(
+            'TM_Core' => array(
+                'code'          => 'TM_Core',
+                'version'       => '1.0.1',
+                'changelog'     => '',
+                'link'          => '',
+                'download_link' => '',
+                'identity_key_link'  => ''
+            ),
+            'TM_License' => array(
+                'code'          => 'TM_License',
+                'version'       => '1.0.0',
+                'changelog'     => '',
+                'link'          => '',
+                'download_link' => '',
+                'identity_key_link'  => ''
+            ),
+            'TM_Argento' => array(
+                'code'          => 'TM_Argento',
+                'version'       => '1.0.0',
+                'changelog'     => '',
+                'link'          => '',
+                'download_link' => '',
+                'identity_key_link'  => ''
+            ),
             'TM_ArgentoArgento' => array(
                 'code'          => 'TM_ArgentoArgento',
                 'version'       => '1.0.0',
