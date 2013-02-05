@@ -300,7 +300,11 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         }
 
         try {
-            $dir = new DirectoryIterator($this->getUpgradesPath());
+            $dir = $this->getUpgradesPath();
+            if (!is_readable($dir)) {
+                return array();
+            }
+            $dir = new DirectoryIterator($dir);
         } catch (Exception $e) {
             // module doesn't has upgrades
             return array();
