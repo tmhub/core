@@ -98,6 +98,10 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
      */
     public function runConfiguration($data)
     {
+        $fieldsToAppendValue = array(
+            'design/head/includes'
+        );
+
         // transform data format to splitted into sections, groups and fields:
         // section => array(
         //     group => array(
@@ -158,6 +162,17 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
                     $website = $this->_getStore($storeId)->getWebsite()->getCode();
                     $store   = $this->_getStore($storeId)->getCode();
                 }
+
+                // get old values of required fields and combine old and new value
+//                foreach ($values as $key => $fields) {
+//                    foreach ($fields as $field => $value) {
+//                        $path = implode('/', array($section, $key, $field));
+//                        if (in_array($path, $fieldsToAppendValue)) {
+//                            $oldValue = Mage::getStoreConfig($path, $store);
+//                            $groups[$key]['fields'][$field]['value'] .= "\n" . $oldValue;
+//                        }
+//                    }
+//                }
 
                 try {
                     Mage::getModel('adminhtml/config_data')
