@@ -337,6 +337,9 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
         }
 
         foreach ($this->getDepends() as $moduleCode) {
+            if (0 !== strpos($moduleCode, 'TM_')) {
+                continue;
+            }
             $this->_getModuleObject($moduleCode)->up();
         }
         $saved = false;

@@ -54,21 +54,21 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
             'name' => 'id'
         ));
 
-        if ($model->isValidationRequired()) {
-            $link = $model->getRemote()->getIdentityKeyLink();
-            $fieldset->addField('identity_key', 'textarea', array(
-                'name'  => 'identity_key',
-                'required' => true,
-                'label' => Mage::helper('tmcore')->__('Identity Key'),
-                'title' => Mage::helper('tmcore')->__('Identity Key'),
-                'note'  => Mage::helper('tmcore')->__(
-                    'Get your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
-                    $link,
-                    $link,
-                    $link
-                )
-            ));
-        }
+//        if ($model->isValidationRequired()) {
+//            $link = $model->getRemote()->getIdentityKeyLink();
+//            $fieldset->addField('identity_key', 'textarea', array(
+//                'name'  => 'identity_key',
+//                'required' => true,
+//                'label' => Mage::helper('tmcore')->__('Identity Key'),
+//                'title' => Mage::helper('tmcore')->__('Identity Key'),
+//                'note'  => Mage::helper('tmcore')->__(
+//                    'Get your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
+//                    $link,
+//                    $link,
+//                    $link
+//                )
+//            ));
+//        }
 
         $field = $fieldset->addField('new_stores', 'multiselect', array(
             'name'   => 'new_stores[]',
