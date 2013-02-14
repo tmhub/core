@@ -21,13 +21,13 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
 
         if ($model->getDataVersion() && ($upgrades = $model->getUpgradesToRun())) {
             $fieldset = $form->addFieldset('upgrade_fieldset', array(
-                'legend' => Mage::helper('cms')->__('Upgrade Information'),
+                'legend' => Mage::helper('tmcore')->__('Upgrade Information'),
                 'class'  => 'fieldset-wide'
             ));
             $fieldset->addField('skip_upgrade', 'checkbox', array(
                 'name'  => 'skip_upgrade',
-                'label' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade instructions'),
-                'title' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade instructions'),
+                'label' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade operations'),
+                'title' => Mage::helper('tmcore')->__('Activate this checkbox, if you want to skip the upgrade operations'),
                 'value' => 1
             ));
 
@@ -37,7 +37,6 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
                 $upgrades[count($upgrades) - 1]
             );
             $fieldset->addField('installed_stores', 'textarea', array(
-                // 'name'     => 'installed_stores',
                 'label'    => $label,
                 'title'    => $label,
                 'value'    => implode("\n", array_intersect_key($stores, array_flip($model->getStores()))),
@@ -54,21 +53,21 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
             'name' => 'id'
         ));
 
-//        if ($model->isValidationRequired()) {
-//            $link = $model->getRemote()->getIdentityKeyLink();
-//            $fieldset->addField('identity_key', 'textarea', array(
-//                'name'  => 'identity_key',
-//                'required' => true,
-//                'label' => Mage::helper('tmcore')->__('Identity Key'),
-//                'title' => Mage::helper('tmcore')->__('Identity Key'),
-//                'note'  => Mage::helper('tmcore')->__(
-//                    'Get your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
-//                    $link,
-//                    $link,
-//                    $link
-//                )
-//            ));
-//        }
+        if ($model->isValidationRequired()) {
+            $link = $model->getRemote()->getIdentityKeyLink();
+            $fieldset->addField('identity_key', 'textarea', array(
+                'name'  => 'identity_key',
+                'required' => true,
+                'label' => Mage::helper('tmcore')->__('Identity Key'),
+                'title' => Mage::helper('tmcore')->__('Identity Key'),
+                'note'  => Mage::helper('tmcore')->__(
+                    'Get your identity key at <a href="%s" title="%s" target="_blank">%s</a>',
+                    $link,
+                    $link,
+                    $link
+                )
+            ));
+        }
 
         $field = $fieldset->addField('new_stores', 'multiselect', array(
             'name'   => 'new_stores[]',
@@ -81,7 +80,6 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
 
         if ($installedStores = $model->getStores()) {
             $fieldset->addField('installed_stores_info', 'label', array(
-                // 'name'     => 'installed_stores_info',
                 'label'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
                 'title'    => Mage::helper('tmcore')->__('Module is already installed at following stores'),
                 'value'    => implode(", ", array_intersect_key($stores, array_flip($installedStores))),

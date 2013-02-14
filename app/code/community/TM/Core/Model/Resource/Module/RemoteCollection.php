@@ -36,7 +36,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
             $modules = array(
                 'TM_Core' => array(
                     'code'          => 'TM_Core',
-                    'version'       => '1.0.1',
+                    'version'       => '1.1.1',
                     'changelog'     => '',
                     'link'          => '',
                     'download_link' => '',
@@ -44,7 +44,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_License' => array(
                     'code'          => 'TM_License',
-                    'version'       => '1.0.0',
+                    'version'       => '1.2.0',
                     'changelog'     => '',
                     'link'          => '',
                     'download_link' => '',
@@ -60,8 +60,22 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_ArgentoArgento' => array(
                     'code'          => 'TM_ArgentoArgento',
-                    'version'       => '1.0.0',
-                    'changelog'     => "",
+                    'version'       => '1.1.0',
+                    'changelog'     => "
+1.1.0
+Add to cart button improvements
+Header styles made more compact for mobile devices
+Sitemap toolbar style fixed
+Fixed box shadow around the product on category listing
+Product page tabs made horizontal for wide screens
+Checkout page design improvements
+Product labels added to the product page image
+Product labels output fixed for mobile devices
+All module depends updated to the latest versions
+
+1.0.0
+Release
+",
                     'link'          => 'http://argentotheme.com',
                     'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
                     'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'

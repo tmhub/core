@@ -43,7 +43,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         ));
 
         $this->addColumn('version_status', array(
-            'header'   => Mage::helper('adminnotification')->__('Version Status'),
+            'header'   => Mage::helper('tmcore')->__('Version Status'),
             'width'    => '60px',
             'index'    => 'version_status',
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_versionStatus',
@@ -51,13 +51,13 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
             'options'  => Mage::getModel('tmcore/module')->getVersionStatuses()
         ));
 
-//        $this->addColumn('actions', array(
-//            'header'   => Mage::helper('adminnotification')->__('Actions'),
-//            'width'    => '200px',
-//            'filter'   => false,
-//            'sortable' => false,
-//            'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'
-//        ));
+        $this->addColumn('actions', array(
+            'header'   => Mage::helper('adminnotification')->__('Actions'),
+            'width'    => '200px',
+            'filter'   => false,
+            'sortable' => false,
+            'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'
+        ));
 
         return parent::_prepareColumns();
     }

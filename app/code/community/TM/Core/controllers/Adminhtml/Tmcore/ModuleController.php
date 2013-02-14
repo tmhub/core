@@ -62,12 +62,15 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
             ->setNewStores($this->getRequest()->getPost('new_stores', array()))
             ->setIdentityKey($this->getRequest()->getParam('identity_key'));
 
-//        $result = $module->validateLicense();
-//        if (is_array($result) && isset($result['error'])) {
-//            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
-//            Mage::getSingleton('adminhtml/session')->addError($result['error']);
-//            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
-//        }
+        $result = $module->validateLicense();
+        if (is_array($result) && isset($result['error'])) {
+            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+            Mage::getSingleton('adminhtml/session')->addError(
+                // try to translate remote response
+                call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error'])
+            );
+            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
+        }
 
         $module->up();
 

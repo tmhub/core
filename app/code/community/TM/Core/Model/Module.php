@@ -122,17 +122,13 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
 
         $key = trim($this->getIdentityKey());
         if (empty($key)) {
-            return array(
-                'error' => 'Identity key is required'
-            );
+            return array('error' => array('Identity key is required'));
         }
 
         // key format is: encoded_site:secret_key:optional_suffix
         $parts = explode(':', $key);
         if (count($parts) < 3) {
-            return array(
-                'error' => 'Identity key format is not valid'
-            );
+            return array('error' => array('Identity key is not valid'));
         }
         list($site, $secret, $suffix) = explode(':', $key);
 
@@ -150,9 +146,10 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $response = $client->request();
             $responseBody = $response->getBody();
         } catch (Exception $e) {
-            return array(
-                'error' => 'Response error: ' . $e->getMessage()
-            );
+            return array('error' => array(
+                'Response error: %s',
+                $e->getMessage()
+            ));
         }
 
         return $this->_parseResponse($responseBody);
@@ -174,9 +171,10 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
                 throw new Exception('Decoding failed');
             }
         } catch (Exception $e) {
-            $result = array(
-                'error' => 'Sorry, try again in five minutes. Validation response parsing error: ' . $e->getMessage()
-            );
+            $result = array('error' => array(
+                'Sorry, try again in five minutes. Validation response parsing error: %s',
+                $e->getMessage()
+            ));
         }
         return $result;
     }
