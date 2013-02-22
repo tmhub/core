@@ -1,0 +1,31 @@
+{
+    "name": "tm/TM_Core",
+    "type": "magento-module",
+    "license":"OSL-3.0",
+    "description":"Templates Master core functionality module",
+    "authors":[
+        {
+            "name":"Template Masters Team",
+            "email":"support@templates-master.com"
+        }
+    ],
+        "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    },
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"http://packages.firegento.com"
+        }
+    ],
+    "extra": {
+        "map": [
+            ["app/code/community/TM/Core", "app/code/community/TM/Core"],
+            ["app/design/adminhtml/default/default/layout/tmcore.xml", "app/design/adminhtml/default/default/layout/tmcore.xml"],
+            ["app/design/adminhtml/default/default/template/tmcore", "app/design/adminhtml/default/default/template/tmcore"],
+            ["app/etc/modules/TM_Core.xml", "app/etc/modules/TM_Core.xml"],
+            ["app/locale/en_US/TM_Core.csv", "app/locale/en_US/TM_Core.csv"],
+            ["js/tm/adminhtml/core", "js/tm/adminhtml/core"]
+        ]
+    }
+}
