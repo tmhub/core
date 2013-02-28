@@ -60,8 +60,11 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_ArgentoArgento' => array(
                     'code'          => 'TM_ArgentoArgento',
-                    'version'       => '1.1.0',
+                    'version'       => '1.1.1',
                     'changelog'     => "
+1.1.1
+Fixed column count with cache enabled on advanced search results and highlight pages
+
 1.1.0
 Add to cart button improvements
 Header styles made more compact for mobile devices
