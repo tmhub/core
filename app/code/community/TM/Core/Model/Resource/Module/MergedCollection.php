@@ -34,7 +34,7 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
             return $this;
         }
 
-        $modules          = Mage::getConfig()->getNode('modules')->children();
+        $modules          = $this->getModulesFromConfigNodes();
         $remoteCollection = Mage::getResourceModel('tmcore/module_remoteCollection');
         $localCollection  = Mage::getResourceModel('tmcore/module_collection');
         foreach ($modules as $code => $values) {
@@ -88,6 +88,11 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
         }
 
         return $this;
+    }
+
+    public function getModulesFromConfigNodes()
+    {
+        return Mage::getConfig()->getNode('modules')->children();
     }
 
     private function _syncLocalAndRemoteData(array $local, $remote)

@@ -15,7 +15,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
     protected function _prepareCollection()
     {
-        $collection = Mage::getResourceModel('tmcore/module_mergedCollection');
+        $collection = Mage::getResourceModel('tmcore/module_AdminGridCollection');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
