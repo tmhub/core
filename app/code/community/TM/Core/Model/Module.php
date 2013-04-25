@@ -141,7 +141,8 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
             $client->setParameterGet('key', $secret);
             $client->setParameterGet('suffix', $suffix);
-            $client->setParameterGet('module', $this->getCode());
+            $module = $this->getTmPurchaseCode() ? $this->getTmPurchaseCode() : $this->getCode();
+            $client->setParameterGet('module', $module);
             $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
             $response = $client->request();
             $responseBody = $response->getBody();
