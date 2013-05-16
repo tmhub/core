@@ -63,6 +63,7 @@ New Pure theme added
 Css styles optimization
 Css styles improvements for small tablet devices
 Removed php warnings during Argento installation
+Fixed upsell products decoration with first/last classes
 AjaxSearch
  * Security bugfix
 Askit
