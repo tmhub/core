@@ -213,7 +213,7 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
             }
 
             foreach ($collection as $block) {
-                $block->load(); // load stores
+                $block->load($block->getId()); // load stores
                 $storesToLeave = array_diff($block->getStores(), $this->getStoreIds());
                 if (count($storesToLeave) && !$isSingleStore) {
                     $block->setStores($storesToLeave);
@@ -273,7 +273,7 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
             }
 
             foreach ($collection as $page) {
-                $page->load(); // load stores
+                $page->load($page->getId()); // load stores
                 $storesToLeave = array_diff($page->getStoreId(), $this->getStoreIds());
                 if (count($storesToLeave) && !$isSingleStore) {
                     $page->setStores($storesToLeave);
@@ -522,7 +522,7 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
             }
 
             foreach ($collection as $label) {
-                $label->load(); // load stores
+                $label->load($label->getId()); // load stores
                 $storesToLeave = array_diff($label->getStoreId(), $this->getStoreIds());
                 if (count($storesToLeave) && !$isSingleStore) {
                     $label->setStores($storesToLeave) // @todo _afterSave for system label
