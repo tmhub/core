@@ -139,6 +139,7 @@
                 <feed_url>templates-master.com/notifier</feed_url>
                 <use_https>0</use_https>
                 <frequency>24</frequency>
+                <filter>installed,promo</filter>
                 <last_update>0</last_update>
             </notification>
             <troubleshooting>

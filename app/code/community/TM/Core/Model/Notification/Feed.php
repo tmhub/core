@@ -22,6 +22,94 @@ class TM_Core_Model_Notification_Feed extends Mage_AdminNotification_Model_Feed
     }
 
     /**
+     * Check feed for modification.
+     * Copy of parent method, but isRead logic added to hide filteted news.
+     *
+     * @return TM_Core_Model_Notification_Feed
+     */
+    public function checkUpdate()
+    {
+        if (($this->getFrequency() + $this->getLastUpdate()) > time()) {
+            return $this;
+        }
+
+        $feedData = array();
+
+        $feedXml = $this->getFeedData();
+
+        if ($feedXml && $feedXml->channel && $feedXml->channel->item) {
+            foreach ($feedXml->channel->item as $item) {
+                $feedData[] = array(
+                    'severity'      => (int)$item->severity,
+                    'date_added'    => $this->getDate((string)$item->pubDate),
+                    'title'         => (string)$item->title,
+                    'description'   => (string)$item->description,
+                    'url'           => (string)$item->link,
+                    'is_read'       => $this->_getIsReadStatus($item)
+                );
+            }
+
+            if ($feedData) {
+                Mage::getModel('adminnotification/inbox')->parse(array_reverse($feedData));
+            }
+
+        }
+        $this->setLastUpdate();
+
+        return $this;
+    }
+
+    /**
+     * If the item channel matches notification filter,
+     * or item channel is not exists in TM_Core_Model_Adminhtml_System_Config_Source_Notification_Filter, then
+     * the item will be marken as not readed
+     *
+     * @param object $item
+     * @return boolean
+     */
+    protected function _getIsReadStatus($item)
+    {
+        if (!$item->channel) {
+            return false;
+        }
+
+        $filters = Mage::getStoreConfig('tmcore/general/filter');
+        if (empty($filters)) {
+            return true; // disable notifications
+        }
+
+        $filters  = explode(',', $filters);
+        $channels = explode(',', (string)$item->channel);
+        $matches  = array_intersect($filters, $channels);
+        if (count($matches)) {
+            return false;
+        }
+
+        $installedFilter = TM_Core_Model_Adminhtml_System_Config_Source_Notification_Filter::FILTER_INSTALLED;
+        if ($item->product && false !== array_search($installedFilter, $filters)) {
+            $products = explode(',', (string)$item->product);
+            $installedProducts = $this->_getInstalledModules();
+            $matches = array_intersect($installedProducts, $products);
+            return count($matches);
+        }
+
+        return true; // installed mode only and item does not have product entry
+    }
+
+    protected function _getInstalledModules($namespace = 'TM')
+    {
+        $modules = Mage::getConfig()->getNode('modules')->children();
+        $result  = array();
+        foreach ($modules as $code => $values) {
+            if (0 !== strpos($code, $namespace)) {
+                continue;
+            }
+            $result[] = $code;
+        }
+        return $result;
+    }
+
+    /**
      * Retrieve Update Frequency
      *
      * @return int
@@ -44,7 +132,7 @@ class TM_Core_Model_Notification_Feed extends Mage_AdminNotification_Model_Feed
     /**
      * Set last update time (now)
      *
-     * @return Mage_AdminNotification_Model_Feed
+     * @return TM_Core_Model_Notification_Feed
      */
     public function setLastUpdate()
     {
