@@ -73,30 +73,35 @@ class TM_Core_Model_Notification_Feed extends Mage_AdminNotification_Model_Feed
             return false;
         }
 
-        $filters = Mage::getStoreConfig('tmcore/general/filter');
+        $channels = (string)$item->channel;
+        if (!$channels) {
+            return false;
+        }
+
+        $filters = Mage::getStoreConfig('tmcore/notification/filter');
         if (empty($filters)) {
             return true; // disable notifications
         }
 
         $filters  = explode(',', $filters);
-        $channels = explode(',', (string)$item->channel);
+        $channels = explode(',', $channels);
         $matches  = array_intersect($filters, $channels);
         if (count($matches)) {
             return false;
         }
 
-        $installedFilter = TM_Core_Model_Adminhtml_System_Config_Source_Notification_Filter::FILTER_INSTALLED;
+        $installedFilter = TM_Core_Model_Adminhtml_System_Config_Source_Notification_Channel::CHANNEL_INSTALLED;
         if ($item->product && false !== array_search($installedFilter, $filters)) {
             $products = explode(',', (string)$item->product);
-            $installedProducts = $this->_getInstalledModules();
+            $installedProducts = $this->_getInstalledModules('TM_', false);
             $matches = array_intersect($installedProducts, $products);
-            return count($matches);
+            return !(bool)count($matches);
         }
 
         return true; // installed mode only and item does not have product entry
     }
 
-    protected function _getInstalledModules($namespace = 'TM')
+    protected function _getInstalledModules($namespace = 'TM_', $returnWithNamespace = true)
     {
         $modules = Mage::getConfig()->getNode('modules')->children();
         $result  = array();
@@ -104,7 +109,11 @@ class TM_Core_Model_Notification_Feed extends Mage_AdminNotification_Model_Feed
             if (0 !== strpos($code, $namespace)) {
                 continue;
             }
-            $result[] = $code;
+            if ($returnWithNamespace) {
+                $result[] = $code;
+            } else {
+                $result[] = str_replace($namespace, '', $code);
+            }
         }
         return $result;
     }
