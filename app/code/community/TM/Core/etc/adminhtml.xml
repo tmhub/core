@@ -5,6 +5,11 @@
             <title>Templates Master</title>
             <sort_order>71</sort_order>
             <children>
+                <tmcore_support translate="title" module="tmcore">
+                    <title>Support</title>
+                    <sort_order>998</sort_order>
+                    <action>adminhtml/tmcore_support/index</action>
+                </tmcore_support>
                 <tmcore_module translate="title" module="tmcore">
                     <title>Modules</title>
                     <sort_order>999</sort_order>
@@ -32,6 +37,10 @@
                         <title>Templates Master</title>
                         <sort_order>71</sort_order>
                         <children>
+                            <tmcore_support translate="title" module="tmcore">
+                                <title>Support</title>
+                                <sort_order>998</sort_order>
+                            </tmcore_support>
                             <tmcore_module translate="title" module="tmcore">
                                 <title>Modules</title>
                                 <sort_order>999</sort_order>
