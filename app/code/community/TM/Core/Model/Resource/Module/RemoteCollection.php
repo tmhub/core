@@ -36,7 +36,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
             $modules = array(
                 'TM_Core' => array(
                     'code'          => 'TM_Core',
-                    'version'       => '1.1.1',
+                    'version'       => '',
                     'changelog'     => '',
                     'link'          => '',
                     'download_link' => '',
@@ -44,7 +44,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_License' => array(
                     'code'          => 'TM_License',
-                    'version'       => '1.2.0',
+                    'version'       => '',
                     'changelog'     => '',
                     'link'          => '',
                     'download_link' => '',
@@ -52,7 +52,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_Argento' => array(
                     'code'          => 'TM_Argento',
-                    'version'       => '1.2.0',
+                    'version'       => '',
                     'changelog'     => '',
                     'link'          => '',
                     'download_link' => '',
@@ -61,7 +61,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_ArgentoArgento' => array(
                     'code'          => 'TM_ArgentoArgento',
-                    'version'       => '1.1.2',
+                    'version'       => '',
                     'changelog'     => "",
                     'link'          => 'http://argentotheme.com',
                     'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
@@ -69,7 +69,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 ),
                 'TM_ArgentoPure' => array(
                     'code'          => 'TM_ArgentoPure',
-                    'version'       => '1.0.0',
+                    'version'       => '',
                     'changelog'     => "",
                     'link'          => 'http://argentotheme.com',
                     'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
