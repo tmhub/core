@@ -80,7 +80,9 @@ class TM_Core_Block_Adminhtml_Module_Manage_Tab_Main
             'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true)
         ));
         $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
-        $field->setRenderer($renderer);
+        if ($renderer) {
+            $field->setRenderer($renderer);
+        }
 
         if ($installedStores = $model->getStores()) {
             $fieldset->addField('installed_stores_info', 'label', array(

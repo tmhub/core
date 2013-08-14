@@ -45,13 +45,16 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
             $module = $localCollection->getItemById($code);
             if (!$module) {
                 $module = new $this->_itemObjectClass();
+            } else {
+                $module->load($module->getId());
             }
 
             $localData = array_merge(
                 array(
                     'id'           => $code,
                     'data_version' => $module->getDataVersion(),
-                    'code'         => $code
+                    'code'         => $code,
+                    'available_upgrades' => $module->getUpgradesToRun()
                 ),
                 $values->asCanonicalArray()
             );
@@ -130,6 +133,9 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
         $dataCompare    = 0;
         if (isset($remote['data_version'])) {
             $dataCompare = version_compare($local['data_version'], $remote['data_version']);
+        }
+        if ($local['available_upgrades']) {
+            $dataCompare = -1;
         }
 
         if ($versionCompare > -1 && $dataCompare > -1) {
