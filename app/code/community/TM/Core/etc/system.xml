@@ -34,7 +34,7 @@
                     <show_in_website>0</show_in_website>
                     <show_in_store>0</show_in_store>
                 </modules>
-                <notification translate="label" module="adminnotification">
+                <notification translate="label" module="tmcore">
                     <label>Notifications</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>30</sort_order>
