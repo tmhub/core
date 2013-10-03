@@ -29,6 +29,10 @@ class TM_Core_Model_Notification_Feed extends Mage_AdminNotification_Model_Feed
      */
     public function checkUpdate()
     {
+        if (!Mage::helper('core')->isModuleEnabled('Mage_AdminNotification')) {
+            return $this;
+        }
+
         if (($this->getFrequency() + $this->getLastUpdate()) > time()) {
             return $this;
         }

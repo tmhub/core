@@ -52,7 +52,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         ));
 
         $this->addColumn('actions', array(
-            'header'   => Mage::helper('adminnotification')->__('Actions'),
+            'header'   => Mage::helper('tmcore')->__('Actions'),
             'width'    => '200px',
             'filter'   => false,
             'sortable' => false,
