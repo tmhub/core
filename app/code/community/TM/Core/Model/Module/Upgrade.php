@@ -507,6 +507,13 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
         $isSingleStore = Mage::app()->isSingleStoreMode();
         foreach ($data as $labelData) {
             if (!empty($labelData['type']) && isset($typeMapping[$labelData['type']])) {
+                Mage::getModel('prolabels/label')->load($typeMapping[$labelData['type']])
+                    ->addData(array(
+                        'label_status' => isset($labelData['label_status']) ?
+                            $labelData['label_status'] : 1
+                    ))
+                    ->save();
+
                 $system     = true;
                 $modelType  = 'prolabels/system';
                 $collection = Mage::getModel($modelType)->getCollection()
