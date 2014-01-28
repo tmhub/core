@@ -77,12 +77,12 @@
                 <children>
                     <!-- <tmcore_support translate="title" module="tmcore">
                         <title>Support</title>
-                        <sort_order>998</sort_order>
+                        <sort_order>11</sort_order>
                         <action>adminhtml/tmcore_support/index</action>
                     </tmcore_support> -->
                     <tmcore_module translate="title" module="tmcore">
                         <title>Modules</title>
-                        <sort_order>999</sort_order>
+                        <sort_order>12</sort_order>
                         <action>adminhtml/tmcore_module/index</action>
                     </tmcore_module>
                 </children>
@@ -109,11 +109,11 @@
                             <children>
                                 <!-- <tmcore_support translate="title" module="tmcore">
                                     <title>Support</title>
-                                    <sort_order>998</sort_order>
+                                    <sort_order>11</sort_order>
                                 </tmcore_support> -->
                                 <tmcore_module translate="title" module="tmcore">
                                     <title>Modules</title>
-                                    <sort_order>999</sort_order>
+                                    <sort_order>12</sort_order>
                                 </tmcore_module>
                             </children>
                         </templates_master>
