@@ -81,6 +81,38 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
     }
 
     /**
+     * @param  array $mapping key=>value pairs of old and new path
+     * @return void
+     */
+    public function renameConfigPath($mapping)
+    {
+        $table   = Mage::getResourceModel('core/config_data')->getMainTable();
+        $adapter = Mage::getModel('core/resource')
+            ->getConnection(Mage_Core_Model_Resource::DEFAULT_WRITE_RESOURCE);
+
+        $newPaths = array_values($mapping);
+        $collection = Mage::getResourceModel('core/config_data_collection');
+        $collection->addFieldToFilter('path', array('in' => $newPaths))
+            ->load();
+
+        $adapter->beginTransaction();
+        try {
+            foreach ($mapping as $oldPath => $newPath) {
+                if ($collection->getItemByColumnValue('path', $newPath)) {
+                    continue;
+                }
+                $adapter->exec(
+                    "UPDATE `$table` SET path='{$newPath}' WHERE path='{$oldPath}'"
+                );
+            }
+            $adapter->commit();
+        } catch (Exception $e) {
+            $adapter->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * @param array $data
      * <pre>
      *  section/group/field => value,
