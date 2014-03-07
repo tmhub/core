@@ -513,6 +513,81 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
     }
 
     /**
+     * Backup and create new tabs
+     * Alias is used as idendifier
+     *
+     * @param  array $data
+     * <pre>
+     *     title
+     *     alias
+     *     block
+     *     template
+     *     custom_option
+     *     unset
+     *     sort_order
+     *     status
+     *     store_id
+     * </pre>
+     * @return void
+     */
+    public function runEasytabs($data)
+    {
+        $existing = Mage::getModel('easytabs/config')->getCollection();
+        $isSingleStore = Mage::app()->isSingleStoreMode();
+
+        foreach ($data as $tabData) {
+            $tab = Mage::getModel('easytabs/config');
+            $tab->setStoreId($this->getStoreIds());
+
+            // backup existing tab with the same alias
+            if (!empty($tabData['alias'])) {
+                $tmp = $existing->getItemsByColumnValue('alias', $tabData['alias']);
+                foreach ($tmp as $tmbTab) {
+                    if (!$tmbTab->getStatus()) {
+                        continue;
+                    }
+                    $storesToLeave = array_diff($tmbTab->getStoreId(), $this->getStoreIds());
+                    if (count($storesToLeave) && !$isSingleStore) {
+                        $tmbTab->setStoreId($storesToLeave);
+                    } else {
+                        $tmbTab->setStatus(0)
+                            ->setAlias($this->_getUniqueString($tmbTab->getAlias()));
+                    }
+
+                    try {
+                        $tmbTab->save();
+                    } catch (Exception $e) {
+                        $this->_fault('easytabs_backup', $e);
+                        continue;
+                    }
+                }
+            }
+
+            if ('easytabs/tab_cms' === $tabData['block']
+                && !is_numeric($tabData['custom_option'])) {
+
+                // get cms block identifier
+                $collection = Mage::getModel('cms/block')
+                    ->getCollection()
+                    ->addStoreFilter($this->getStoreIds())
+                    ->addFieldToFilter('identifier', $tabData['custom_option']);
+
+                if (!$isSingleStore) {
+                    $collection->addStoreFilter($this->getStoreIds());
+                }
+                $cmsBlock = $collection->getFirstItem();
+
+                if (!$cmsBlock->getId()) {
+                    continue;
+                }
+                $tabData['custom_option'] = $cmsBlock->getId();
+            }
+
+            $tab->addData($tabData)->save();
+        }
+    }
+
+    /**
      * Backup and create new labels
      *
      * @param array $data
