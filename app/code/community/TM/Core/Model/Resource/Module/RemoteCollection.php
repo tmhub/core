@@ -67,6 +67,14 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                     'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
                     'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
                 ),
+                'TM_ArgentoMage2Cloud' => array(
+                    'code'          => 'TM_ArgentoMage2Cloud',
+                    'version'       => '',
+                    'changelog'     => "",
+                    'link'          => 'http://argentotheme.com',
+                    'download_link' => '',
+                    'identity_key_link' => ''
+                ),
                 'TM_ArgentoPure' => array(
                     'code'          => 'TM_ArgentoPure',
                     'version'       => '',
