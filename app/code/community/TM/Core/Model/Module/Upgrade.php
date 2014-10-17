@@ -191,6 +191,9 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
                     $website = null;
                     $store   = null;
                 } else {
+                    if (!$this->_getStore($storeId)->getId()) {
+                        continue;
+                    }
                     $website = $this->_getStore($storeId)->getWebsite()->getCode();
                     $store   = $this->_getStore($storeId)->getCode();
                 }
