@@ -17,7 +17,9 @@ document.observe("dom:loaded", function() {
     $theards = $this->getTheards();
     $previosTheard = current($theards);
     $diff = array();
-    foreach ($theards as $_theard): ?>
+    foreach ($theards as $_theard):
+        $_theard = $_theard->getData();
+        ?>
         <li>
             <strong>
                 <?php echo $this->getTheardOwnerTitle($_theard) ?>
@@ -59,7 +61,8 @@ document.observe("dom:loaded", function() {
             });
 
         </script>
-            <?php if ($_theard['status'] !== $previosTheard['status']) :?>
+            <?php if (isset($_theard['status']) && isset($previosTheard['status']) &&
+                $_theard['status'] !== $previosTheard['status']) :?>
                 <br/><small> <?php echo $this->helper('helpmate')->__(
                         'Status has been changed from %s to %s',
                         $this->getTheardStatus($previosTheard),
@@ -68,7 +71,8 @@ document.observe("dom:loaded", function() {
                     ) ?>
                 </small>
              <?php endif;
-             if ($_theard['priority'] !== $previosTheard['priority']) : ?>
+             if (isset($_theard['priority']) && isset($previosTheard['priority']) &&
+                 $_theard['priority'] !== $previosTheard['priority']) : ?>
                 <br/><small><?php echo $this->helper('helpmate')->__(
                         'Priority has been changed from %s to %s',
                         $this->getTheardPriority($previosTheard),
@@ -76,7 +80,8 @@ document.observe("dom:loaded", function() {
                     );?>
                 </small>
              <?php endif;
-             if ($_theard['department_id'] !== $previosTheard['department_id']) : ?>
+             if (isset($_theard['department_id']) && isset($previosTheard['department_id']) &&
+                 $_theard['department_id'] !== $previosTheard['department_id']) : ?>
                 <br/><small><?php echo $this->helper('helpmate')->__(
                         'Department has been changed from %s to %s',
                         $this->getTheardDepartment($previosTheard),

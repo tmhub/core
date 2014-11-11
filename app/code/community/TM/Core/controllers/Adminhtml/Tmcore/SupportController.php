@@ -7,8 +7,18 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
         $this->loadLayout()
             ->_setActiveMenu('templates_master/tmcore_module')
             ->_addBreadcrumb('Templates Master', 'Templates Master')
-            ->_addBreadcrumb(Mage::helper('tmcore')->__('Supprt'), Mage::helper('tmcore')->__('Support'));
+            ->_addBreadcrumb(Mage::helper('tmcore')->__('Support'), Mage::helper('tmcore')->__('Support'));
         return $this;
+    }
+
+    /**
+     *
+     * @return string (uri)
+     */
+    protected function _getApiHost()
+    {
+//        return 'http://mage.local';
+        return Mage::getStoreConfig('tmcore/troubleshooting/url');
     }
 
     /**
@@ -32,8 +42,16 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
         return $restClient;
     }
 
+    /**
+     *
+     * @param type $response
+     * @return boolean
+     */
     protected function _prepareApiRestResponseErrorMessages($response)
     {
+        if (!is_object($response) || !property_exists($response, 'messages')) {
+            return false;
+        }
         $messages = $response->messages;
         if ($messages) {
             $errors = $messages->error;
@@ -51,27 +69,30 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
         return false;
     }
 
+    /**
+     *
+     * @param string $uri
+     * @return \Varien_Object|\TM_Core_Model_Resource_Support_Collection
+     */
     protected function _getRestApiData($uri)
     {
         $restClient = $this->_getRestApiClient();
 
         if (!$restClient) {
-            return;
+            return false;
         }
 
         $restClient->setHeaders('Accept', 'application/json');
         $restClient->setMethod(Zend_Http_Client::GET);
 
-        $magentohost = Mage::getStoreConfig('tmcore/troubleshooting/url');
-        $restClient->setUri($magentohost . '/api/rest' . $uri);
+        $host = $this->_getApiHost();
+        $restClient->setUri($host . '/api/rest' . $uri);
 
         $response = $restClient->request();
         $_items = json_decode($response->getBody());
 
         $this->_prepareApiRestResponseErrorMessages($_items);
 
-//        Zend_Debug::dump($_items);
-//        die;
         if (is_array($_items)) {
             $collection = new TM_Core_Model_Resource_Support_Collection();
             foreach ($_items as &$_item) {
@@ -85,12 +106,18 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
         return $object;
     }
 
+    /**
+     *
+     * @param type $uri
+     * @param type $params
+     * @return type
+     */
     protected function _setRestApiData($uri, $params)
     {
         $restClient = $this->_getRestApiClient();
 
         if (!$restClient) {
-            return;
+            return false;
         }
 
         $restClient->setHeaders('Accept', 'application/json');
@@ -98,8 +125,8 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
         $restClient->setEncType('application/json');
         $restClient->setMethod(Zend_Http_Client::POST);
 
-        $magentohost = Mage::getStoreConfig('tmcore/troubleshooting/url');
-        $restClient->setUri($magentohost . '/api/rest' . $uri);
+        $host = $this->_getApiHost();
+        $restClient->setUri($host . '/api/rest' . $uri);
 
         $restClient->setRawData(json_encode($params));
 
@@ -113,18 +140,19 @@ class TM_Core_Adminhtml_Tmcore_SupportController extends Mage_Adminhtml_Controll
 
     public function oauthAction()
     {
-        $magentohost = Mage::getStoreConfig('tmcore/troubleshooting/url');
-//        $magentohost = 'http://local.magentocommerce.com/';//Mage::getBaseUrl();// 'http://templates-master.com';
+        $host = $this->_getApiHost();
+        $consumerKey = Mage::getStoreConfig('tmcore/troubleshooting/consumer_key');
+        $consumerSecret = Mage::getStoreConfig('tmcore/troubleshooting/consumer_secret');
         //Basic parameters that need to be provided for oAuth authentication
         //on Magento
         $params = array(
-            'siteUrl'         => "{$magentohost}/oauth",
-            'requestTokenUrl' => "{$magentohost}/oauth/initiate",
-            'accessTokenUrl'  => "{$magentohost}/oauth/token",
-            'authorizeUrl'    => "{$magentohost}/oauth/authorize",
-//            'authorizeUrl'    => "{$magentohost}admin/oauth_authorize", //This URL is used only if we authenticate as Admin user type
-            'consumerKey'     => Mage::getStoreConfig('tmcore/troubleshooting/consumer_key'), //Consumer key registered in server administration
-            'consumerSecret'  => Mage::getStoreConfig('tmcore/troubleshooting/consumer_secret'), //Consumer secret registered in server administration
+            'siteUrl'         => "{$host}/oauth",
+            'requestTokenUrl' => "{$host}/oauth/initiate",
+            'accessTokenUrl'  => "{$host}/oauth/token",
+            'authorizeUrl'    => "{$host}/oauth/authorize",
+//            'authorizeUrl'    => "{$magentohost}/admin/oauth_authorize", //This URL is used only if we authenticate as Admin user type
+            'consumerKey'     => $consumerKey, //Consumer key registered in server administration
+            'consumerSecret'  => $consumerSecret, //Consumer secret registered in server administration
             'callbackUrl'     => $this->getUrl('*/*/index')//Url of callback action below
         );
         $oAuthClient = Mage::getModel('tmcore/oauth_client');
