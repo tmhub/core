@@ -14,4 +14,38 @@ class TM_Core_Model_Observer
             $feedModel->checkUpdate();
         }
     }
+
+    /**
+     * Add layout update files just before local.xml
+     * Conditions are supported too
+     */
+    public function addLayoutUpdate($observer)
+    {
+        // $area = Mage::getSingleton('core/design_package')->getArea();
+        $area = Mage_Core_Model_App_Area::AREA_FRONTEND;
+        $updates = $observer->getUpdates();
+        $extraNodes = Mage::app()->getConfig()->getNode($area.'/tm_layout/updates');
+        foreach ($extraNodes->children() as $node) {
+            if ($node->getAttribute('condition')) {
+                $parts  = explode('/', $node->getAttribute('condition'));
+                $helper = array_shift($parts);
+                $method = array_shift($parts);
+                if (count($parts)) {
+                    $helper .= '/' . $method;
+                    $method = array_shift($parts);
+                }
+                $helper = Mage::helper($helper);
+                if ($args = $node->getAttribute('args')) {
+                    $args = explode(',', $args);
+                    $enabled = call_user_func_array(array($helper, $method), $args);
+                } else {
+                    $enabled = $helper->{$method}();
+                }
+                if (!$enabled) {
+                    continue;
+                }
+            }
+            $updates->appendChild($node);
+        }
+    }
 }

@@ -41,6 +41,17 @@
                 </connection>
             </tm_core_setup>
         </resources>
+        <events>
+            <core_layout_update_updates_get_after>
+                <observers>
+                    <tm_layout>
+                        <type>model</type>
+                        <class>tmcore/observer</class>
+                        <method>addLayoutUpdate</method>
+                    </tm_layout>
+                </observers>
+            </core_layout_update_updates_get_after>
+        </events>
     </global>
 
     <adminhtml>
@@ -134,7 +145,7 @@
              </adminhtml>
         </routers>
     </admin>
-    
+
     <default>
         <tmcore>
             <modules>
