@@ -4,7 +4,7 @@
     "homepage": "https://github.com/tmhub/core",
     "license": "OSL-3.0",
     "description": "Templates Master core functionality module",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "authors": [
         {
             "name": "Template Masters Team",
@@ -20,21 +20,5 @@
             "type": "composer",
             "url": "http://tmhub.github.io/packages/"
         }
-    ],
-    "extra": {
-        "map": [
-            ["app/code/community/TM/Core", "app/code/community/TM/Core"],
-            ["app/design/adminhtml/default/default/layout/tmcore.xml", "app/design/adminhtml/default/default/layout/tmcore.xml"],
-            ["app/design/adminhtml/default/default/template/tmcore", "app/design/adminhtml/default/default/template/tmcore"],
-            ["app/etc/modules/TM_Core.xml", "app/etc/modules/TM_Core.xml"],
-            ["app/locale/en_US/TM_Core.csv", "app/locale/en_US/TM_Core.csv"],
-            ["app/locale/es_ES/TM_Core.csv", "app/locale/es_ES/TM_Core.csv"],
-            ["app/locale/fr_FR/TM_Core.csv", "app/locale/fr_FR/TM_Core.csv"],
-            ["app/locale/it_IT/TM_Core.csv", "app/locale/it_IT/TM_Core.csv"],
-            ["app/locale/nl_NL/TM_Core.csv", "app/locale/nl_NL/TM_Core.csv"],
-            ["app/locale/pt_PT/TM_Core.csv", "app/locale/pt_PT/TM_Core.csv"],
-            ["js/tm/adminhtml/core", "js/tm/adminhtml/core"]
-        ],
-        "changelog": ""
-    }
+    ]
 }
