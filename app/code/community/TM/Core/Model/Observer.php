@@ -25,6 +25,9 @@ class TM_Core_Model_Observer
         $area = Mage_Core_Model_App_Area::AREA_FRONTEND;
         $updates = $observer->getUpdates();
         $extraNodes = Mage::app()->getConfig()->getNode($area.'/tm_layout/updates');
+        if (!$extraNodes) {
+            return;
+        }
         foreach ($extraNodes->children() as $node) {
             if ($node->getAttribute('condition')) {
                 $parts  = explode('/', $node->getAttribute('condition'));
