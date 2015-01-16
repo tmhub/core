@@ -102,7 +102,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function isValidationRequired()
     {
-        return !$this->getRemote() || $this->getRemote()->getIdentityKeyLink();
+        return $this->getRemote() && $this->getRemote()->getIdentityKeyLink();
     }
 
     /**
