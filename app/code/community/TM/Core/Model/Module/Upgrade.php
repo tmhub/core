@@ -516,6 +516,48 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
     }
 
     /**
+     * Unset easytabs from storeIds
+     *
+     * @param  string $type
+     * @param  array $storeIdsToRemove
+     * @return void
+     */
+    public function unsetEasytab($type, $storeIdsToRemove)
+    {
+        $isSingleStore = Mage::app()->isSingleStoreMode();
+
+        $storeIdsToRemove[] = 0;
+        $storesToKeep = Mage::getResourceModel('core/store_collection')->getAllIds();
+        $storesToKeep = array_diff($storesToKeep, $storeIdsToRemove);
+
+        $relatedTabs = Mage::getModel('easytabs/config_collection');
+        $relatedTabs->addFieldToFilter('block', $type);
+        foreach ($relatedTabs as $relatedTab) {
+            if ($isSingleStore) {
+                $relatedTab->setStatus(0);
+            } else {
+                $stores = $relatedTab->getStoreId();
+                $stores = array_diff($stores, array(0));
+                if (!$stores) { // tab was assigned to all stores
+                    $relatedTab->setStoreId($storesToKeep);
+                } else {
+                    if (!array_diff($stores, $storesToKeep)) {
+                        // tab is not assigned to storesToRemove
+                        continue;
+                    }
+                    $keep = array_intersect($stores, $storesToKeep);
+                    if ($keep) {
+                        $relatedTab->setStoreId($keep);
+                    } else {
+                        $relatedTab->setStatus(0);
+                    }
+                }
+            }
+            $relatedTab->save();
+        }
+    }
+
+    /**
      * Backup and create new tabs
      * Alias is used as idendifier
      *
