@@ -97,4 +97,9 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('tmcore')->__("The module has been saved"));
         $this->_redirect('*/*/');
     }
+
+    protected function _isAllowed()
+    {
+        return Mage::getSingleton('admin/session')->isAllowed('templates_master/tmcore_module');
+    }
 }
