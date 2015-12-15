@@ -11,10 +11,6 @@
             "email": "support@templates-master.com"
         }
     ],
-    "require": {
-        "magento-hackathon/composer-command-integrator":"*",
-        "magento-hackathon/magento-composer-installer": "*"
-    },
     "repositories": [
         {
             "type": "composer",
