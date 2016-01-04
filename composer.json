@@ -11,10 +11,11 @@
             "email": "support@templates-master.com"
         }
     ],
+    "minimum-stability": "dev",
     "repositories": [
         {
             "type": "composer",
-            "url": "http://tmhub.github.io/packages/"
+            "url": "http://tmhub.github.io/packages"
         }
     ]
 }
