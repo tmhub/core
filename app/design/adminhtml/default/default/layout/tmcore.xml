@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <layout>
+    <adminhtml_tmcore_subscription_index>
+        <reference name="content">
+            <block type="tmcore/adminhtml_subscription_edit" name="tmcore_subscription"/>
+        </reference>
+    </adminhtml_tmcore_subscription_index>
+
     <adminhtml_tmcore_module_index>
         <update handle="tmcore_popup"/>
         <reference name="content">
@@ -54,7 +60,7 @@
             </block>
         </reference>
     </adminhtml_tmcore_support_edit>
-    
+
     <adminhtml_tmcore_support_new>
         <update handle="adminhtml_tmcore_support_edit"/>
     </adminhtml_tmcore_support_new>
