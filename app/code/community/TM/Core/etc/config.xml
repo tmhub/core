@@ -156,6 +156,7 @@
                 <url>/license/validate</url>
             </license>
             <notification>
+                <enabled>1</enabled>
                 <feed_url>templates-master.com/notifier</feed_url>
                 <use_https>0</use_https>
                 <frequency>24</frequency>

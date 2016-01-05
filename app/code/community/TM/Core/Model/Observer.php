@@ -10,6 +10,10 @@ class TM_Core_Model_Observer
     public function preDispatch(Varien_Event_Observer $observer)
     {
         if (Mage::getSingleton('admin/session')->isLoggedIn()) {
+            if (!Mage::getStoreConfig('tmcore/notification/enabled')) {
+                return;
+            }
+
             $feedModel = Mage::getModel('tmcore/notification_feed');
             $feedModel->checkUpdate();
         }
