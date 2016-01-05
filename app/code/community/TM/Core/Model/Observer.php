@@ -55,42 +55,4 @@ class TM_Core_Model_Observer
             $updates->appendChild($node);
         }
     }
-
-    public function onBeforeConfigView($observer)
-    {
-        $helper = Mage::helper('tmcore/subscription');
-        $section = $observer->getControllerAction()->getRequest()->getParam('section');
-        if (!$helper->canValidateConfigSection($section)) {
-            return;
-        }
-
-        $result = $helper->validateSubscription();
-        if (is_array($result) && isset($result['error'])) {
-            Mage::getSingleton('adminhtml/session')->addError($result['error']);
-        }
-    }
-
-    public function onBeforeConfigSave($observer)
-    {
-        $helper = Mage::helper('tmcore/subscription');
-        $section = $observer->getControllerAction()->getRequest()->getParam('section');
-        if (!$helper->canValidateConfigSection($section)) {
-            return;
-        }
-
-        $result = $helper->validateSubscription();
-        if (is_array($result) && isset($result['error'])) {
-            // Mage::getSingleton('adminhtml/session')->addError($result['error']);
-            $controller = $observer->getControllerAction();
-            $controller->setFlag('', Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
-            $controller->getResponse()->setRedirect(
-                Mage::helper('adminhtml')->getUrl(
-                    '*/*/edit',
-                    array(
-                        '_current' => array('section', 'website', 'store')
-                    )
-                )
-            );
-        }
-    }
 }

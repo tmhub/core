@@ -2,7 +2,7 @@
 <config>
     <modules>
         <TM_Core>
-            <version>2.0.0</version>
+            <version>1.3.2</version>
         </TM_Core>
     </modules>
 
@@ -71,24 +71,6 @@
                     </tmcore>
                 </observers>
             </controller_action_predispatch>
-            <controller_action_predispatch_adminhtml_system_config_edit>
-                <observers>
-                    <argento>
-                        <type>model</type>
-                        <class>tmcore/observer</class>
-                        <method>onBeforeConfigView</method>
-                    </argento>
-                </observers>
-            </controller_action_predispatch_adminhtml_system_config_edit>
-            <controller_action_predispatch_adminhtml_system_config_save>
-                <observers>
-                    <argento>
-                        <type>model</type>
-                        <class>tmcore/observer</class>
-                        <method>onBeforeConfigSave</method>
-                    </argento>
-                </observers>
-            </controller_action_predispatch_adminhtml_system_config_save>
         </events>
         <translate>
             <modules>
@@ -99,6 +81,57 @@
                 </TM_Core>
             </modules>
         </translate>
+        <menu>
+            <templates_master>
+                <title>Templates Master</title>
+                <sort_order>71</sort_order>
+                <children>
+                    <!-- <tmcore_support translate="title" module="tmcore">
+                        <title>Support</title>
+                        <sort_order>11</sort_order>
+                        <action>adminhtml/tmcore_support/index</action>
+                    </tmcore_support> -->
+                    <tmcore_module translate="title" module="tmcore">
+                        <title>Modules</title>
+                        <sort_order>1340</sort_order>
+                        <action>adminhtml/tmcore_module/index</action>
+                    </tmcore_module>
+                </children>
+            </templates_master>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <tmcore>
+                                            <title>Core</title>
+                                        </tmcore>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                        <templates_master>
+                            <title>Templates Master</title>
+                            <sort_order>71</sort_order>
+                            <children>
+                                <!-- <tmcore_support translate="title" module="tmcore">
+                                    <title>Support</title>
+                                    <sort_order>11</sort_order>
+                                </tmcore_support> -->
+                                <tmcore_module translate="title" module="tmcore">
+                                    <title>Modules</title>
+                                    <sort_order>1340</sort_order>
+                                </tmcore_module>
+                            </children>
+                        </templates_master>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
     </adminhtml>
 
     <admin>
@@ -116,7 +149,7 @@
     <default>
         <tmcore>
             <modules>
-                <feed_url>swissuplabs.com/modules.json</feed_url>
+                <feed_url>templates-master.com/modules.json</feed_url>
             </modules>
             <license>
                 <use_https>0</use_https>
@@ -124,15 +157,15 @@
             </license>
             <notification>
                 <enabled>1</enabled>
-                <feed_url>swissuplabs.com/notifier</feed_url>
+                <feed_url>templates-master.com/notifier</feed_url>
                 <use_https>0</use_https>
                 <frequency>24</frequency>
                 <filter>installed,promo,release,update,other</filter>
                 <last_update>0</last_update>
             </notification>
             <troubleshooting>
-                <text><![CDATA[Please <a href='http://swissuplabs.com/contacts' onclick='window.open(this.href); return false;'>contact us</a>, if you have some issues with one of our modules.]]></text>
-                <url>http://swissuplabs.com/</url>
+                <text><![CDATA[Please <a href='http://templates-master.com/contacts' onclick='window.open(this.href); return false;'>contact us</a>, if you have some issues with one of our modules.]]></text>
+                <url>http://templates-master.com/</url>
                 <consumer_key>b96f1fdbcc5df5608bab036f23caead2</consumer_key>
                 <consumer_secret>b17bb7641ffcdb267264b39460eee8ae</consumer_secret>
             </troubleshooting>
