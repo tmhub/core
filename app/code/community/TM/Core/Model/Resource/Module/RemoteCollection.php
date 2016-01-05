@@ -114,6 +114,14 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                     'link'          => 'http://argentotheme.com',
                     'download_link' => '',
                     'identity_key_link' => ''
+                ),
+                'Swissup_Subscription' => array(
+                    'code'          => 'Swissup_Subscription',
+                    'version'       => '',
+                    'changelog'     => "",
+                    'link'          => 'http://swissuplabs.com',
+                    'download_link' => 'https://swissuplabs.com/subscription/customer/products/',
+                    'identity_key_link' => 'https://swissuplabs.com/license/customer/identity/'
                 )
             );
         }
