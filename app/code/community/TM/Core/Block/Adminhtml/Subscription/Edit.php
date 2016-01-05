@@ -12,6 +12,7 @@ class TM_Core_Block_Adminhtml_Subscription_Edit extends Mage_Adminhtml_Block_Wid
 
         $this->setData('form_action_url', $this->getUrl('*/*/save'));
         $this->_updateButton('save', 'label', Mage::helper('cms')->__('Activate'));
+        $this->_removeButton('delete');
     }
 
     /**

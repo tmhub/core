@@ -2,6 +2,8 @@
 
 class TM_Core_Adminhtml_Tmcore_SubscriptionController extends Mage_Adminhtml_Controller_Action
 {
+    const MODULE_CODE = 'Swissup_Subscription';
+
     protected function _initAction()
     {
         $this->loadLayout()
@@ -19,7 +21,7 @@ class TM_Core_Adminhtml_Tmcore_SubscriptionController extends Mage_Adminhtml_Con
         $this->_initAction();
 
         $module = Mage::getModel('tmcore/module');
-        $module->load('Swissup_Subscription');
+        $module->load(self::MODULE_CODE);
 
         $data = Mage::getSingleton('adminhtml/session')->getFormData(true);
         if (!empty($data)) {
@@ -44,7 +46,7 @@ class TM_Core_Adminhtml_Tmcore_SubscriptionController extends Mage_Adminhtml_Con
          * @var TM_Core_Model_Module
          */
         $module = Mage::getModel('tmcore/module');
-        $module->load('Swissup_Subscription')
+        $module->load(self::MODULE_CODE)
             ->setNewStores(array(0))
             ->setIdentityKey($this->getRequest()->getParam('identity_key'));
 
@@ -55,7 +57,7 @@ class TM_Core_Adminhtml_Tmcore_SubscriptionController extends Mage_Adminhtml_Con
                 // try to translate remote response
                 call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error'])
             );
-            return $this->_redirect('*/*/index', array('id' => $module->getId()));
+            return $this->_redirect('*/*/index');
         }
 
         $module->up();
@@ -73,7 +75,7 @@ class TM_Core_Adminhtml_Tmcore_SubscriptionController extends Mage_Adminhtml_Con
                 }
             }
             Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
-            return $this->_redirect('*/*/index', array('id' => $module->getId()));
+            return $this->_redirect('*/*/index');
         }
 
         Mage::getSingleton('adminhtml/session')->setFormData(false);
