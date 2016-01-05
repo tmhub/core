@@ -71,6 +71,24 @@
                     </tmcore>
                 </observers>
             </controller_action_predispatch>
+            <controller_action_predispatch_adminhtml_system_config_edit>
+                <observers>
+                    <argento>
+                        <type>model</type>
+                        <class>tmcore/observer</class>
+                        <method>onBeforeConfigView</method>
+                    </argento>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_config_edit>
+            <controller_action_predispatch_adminhtml_system_config_save>
+                <observers>
+                    <argento>
+                        <type>model</type>
+                        <class>tmcore/observer</class>
+                        <method>onBeforeConfigSave</method>
+                    </argento>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_config_save>
         </events>
         <translate>
             <modules>
