@@ -10,7 +10,12 @@
                     <sort_order>1339</sort_order>
                     <action>adminhtml/tmcore_support/index</action>
                 </tmcore_support>-->
-                
+
+                <tmcore_subscription translate="title" module="tmcore">
+                    <title>Activate SwissUpLabs Subscription</title>
+                    <sort_order>1</sort_order>
+                    <action>adminhtml/tmcore_subscription/index</action>
+                </tmcore_subscription>
                 <tmcore_module translate="title" module="tmcore">
                     <title>Modules</title>
                     <sort_order>1340</sort_order>
@@ -42,6 +47,10 @@
                                 <title>Support</title>
                                 <sort_order>11</sort_order>
                             </tmcore_support> -->
+                            <tmcore_subscription translate="title" module="tmcore">
+                                <title>Activate SwissUpLabs Subscription</title>
+                                <sort_order>1</sort_order>
+                            </tmcore_subscription>
                             <tmcore_module translate="title" module="tmcore">
                                 <title>Modules</title>
                                 <sort_order>1340</sort_order>
