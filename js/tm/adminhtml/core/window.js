@@ -45,7 +45,7 @@ TmcoreWindow.prototype = {
         this.blockMask.style.display = 'none';
         this.blockWindow.style.display = 'none';
     },
-}
+};
 
 Event.observe(window, 'load',  function() {
     tmcoreWindow = new TmcoreWindow();
