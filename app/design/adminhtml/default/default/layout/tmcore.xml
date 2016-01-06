@@ -12,6 +12,7 @@
     </adminhtml_tmcore_module_grid>
 
     <adminhtml_tmcore_module_manage>
+        <update handle="tmcore_popup"/>
         <reference name="content">
             <block type="tmcore/adminhtml_module_manage" name="module.manage"/>
         </reference>
@@ -54,7 +55,7 @@
             </block>
         </reference>
     </adminhtml_tmcore_support_edit>
-    
+
     <adminhtml_tmcore_support_new>
         <update handle="adminhtml_tmcore_support_edit"/>
     </adminhtml_tmcore_support_new>

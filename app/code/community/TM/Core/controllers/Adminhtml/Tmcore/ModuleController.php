@@ -40,6 +40,16 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
             $module->addData($data);
         }
 
+        if ($info = Mage::getSingleton('adminhtml/session')->getTmValidationInfo(true)) {
+            $link = Mage::helper('tmcore/debug')->preparePopup(
+                $info['response'],
+                'SwissUpLabs subscription validation response'
+            );
+            Mage::getSingleton('adminhtml/session')->addError(
+                $info['error'] . ' | ' . $link
+            );
+        }
+
         Mage::register('tmcore_module', $module);
 
         $this->_initAction()
@@ -65,10 +75,18 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $result = $module->validateLicense();
         if (is_array($result) && isset($result['error'])) {
             Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
-            Mage::getSingleton('adminhtml/session')->addError(
-                // try to translate remote response
-                call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error'])
-            );
+
+            $error = call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error']);
+            if (isset($result['response'])) {
+                Mage::getSingleton('adminhtml/session')->setTmValidationInfo(
+                    array(
+                        'error'    => $error,
+                        'response' => $result['response']
+                    )
+                );
+            } else {
+                Mage::getSingleton('adminhtml/session')->addError($error);
+            }
             return $this->_redirect('*/*/manage', array('id' => $module->getId()));
         }
 
