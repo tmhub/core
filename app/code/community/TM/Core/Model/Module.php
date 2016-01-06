@@ -138,7 +138,7 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $adapter = new Zend_Http_Client_Adapter_Curl();
             $client->setAdapter($adapter);
             $client->setUri($this->_getValidateUri($site));
-            $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
+            $client->setConfig(array('maxredirects'=>5, 'timeout'=>30));
             $client->setParameterGet('key', $secret);
             $client->setParameterGet('suffix', $suffix);
             $module = $this->getTmPurchaseCode() ? $this->getTmPurchaseCode() : $this->getCode();
@@ -173,10 +173,13 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
                 throw new Exception('Decoding failed');
             }
         } catch (Exception $e) {
-            $result = array('error' => array(
-                'Sorry, try again in five minutes. Validation response parsing error: %s',
-                $e->getMessage()
-            ));
+            $result = array(
+                'error' => array(
+                    'Sorry, try again in five minutes. Validation response parsing error: %s',
+                    $e->getMessage()
+                ),
+                'response' => $response
+            );
         }
         return $result;
     }
