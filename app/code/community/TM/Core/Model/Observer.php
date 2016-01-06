@@ -55,4 +55,12 @@ class TM_Core_Model_Observer
             $updates->appendChild($node);
         }
     }
+
+    public function onBeforeRenderLayout()
+    {
+        $layout = Mage::app()->getLayout();
+        if ($debug = $layout->getBlock(TM_Core_Helper_Debug::POPUP_NAME)) {
+            $layout->getBlock('content')->append($debug);
+        }
+    }
 }

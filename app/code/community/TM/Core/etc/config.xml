@@ -81,6 +81,16 @@
                 </TM_Core>
             </modules>
         </translate>
+        <events>
+            <controller_action_layout_render_before>
+                <observers>
+                    <tmcore>
+                        <class>tmcore/observer</class>
+                        <method>onBeforeRenderLayout</method>
+                    </tmcore>
+                </observers>
+            </controller_action_layout_render_before>
+        </events>
     </adminhtml>
 
     <admin>
