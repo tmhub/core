@@ -144,6 +144,9 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
             $module = $this->getTmPurchaseCode() ? $this->getTmPurchaseCode() : $this->getCode();
             $client->setParameterGet('module', $module);
             $client->setParameterGet('module_code', $this->getCode());
+            if ($this->getConfigSection()) {
+                $client->setParameterGet('config_section', $this->getConfigSection());
+            }
             $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
             $response = $client->request();
             $responseBody = $response->getBody();
