@@ -2,7 +2,7 @@
 <config>
     <modules>
         <TM_Core>
-            <version>1.3.2</version>
+            <version>1.3.3</version>
         </TM_Core>
     </modules>
 
@@ -25,6 +25,11 @@
             <tmcore>
                 <class>TM_Core_Block</class>
             </tmcore>
+            <cms>
+                <rewrite>
+                    <block>TM_Core_Block_Cms_Block</block>
+                </rewrite>
+            </cms>
         </blocks>
         <helpers>
             <tmcore>
