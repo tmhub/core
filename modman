@@ -1,6 +1,7 @@
 app/code/community/TM/Core                              app/code/community/TM/Core
 app/design/adminhtml/default/default/layout/tmcore.xml  app/design/adminhtml/default/default/layout/tmcore.xml
 app/design/adminhtml/default/default/template/tmcore    app/design/adminhtml/default/default/template/tmcore
+app/design/frontend/base/default/layout/tm/core.xml     app/design/frontend/base/default/layout/tm/core.xml
 app/etc/modules/TM_Core.xml                             app/etc/modules/TM_Core.xml
 app/locale/en_US/TM_Core.csv                            app/locale/en_US/TM_Core.csv
 app/locale/es_ES/TM_Core.csv                            app/locale/es_ES/TM_Core.csv

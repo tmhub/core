@@ -98,6 +98,16 @@
         </events>
     </adminhtml>
 
+    <frontend>
+        <layout>
+            <updates>
+                <tm_core>
+                    <file>tm/core.xml</file>
+                </tm_core>
+            </updates>
+        </layout>
+    </frontend>
+
     <admin>
         <routers>
              <adminhtml>

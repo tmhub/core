@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<layout>
+    <default>
+        <reference name="head">
+            <action method="addJs" ifconfig="tmcore/jslibs/jquery">
+                <script>lib/jquery/jquery-1.10.2.min.js</script>
+            </action>
+            <action method="addJs" ifconfig="tmcore/jslibs/jquery">
+                <script>lib/jquery/noconflict.js</script>
+            </action>
+        </reference>
+    </default>
+</layout>
