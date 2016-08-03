@@ -10,3 +10,5 @@ app/locale/it_IT/TM_Core.csv                            app/locale/it_IT/TM_Core
 app/locale/nl_NL/TM_Core.csv                            app/locale/nl_NL/TM_Core.csv
 app/locale/pt_PT/TM_Core.csv                            app/locale/pt_PT/TM_Core.csv
 js/tm/adminhtml/core                                    js/tm/adminhtml/core
+js/lib/jquery/jquery-1.10.2.min.js                      js/lib/jquery/jquery-1.10.2.min.js
+js/lib/jquery/noconflict.js                             js/lib/jquery/noconflict.js
