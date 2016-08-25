@@ -101,7 +101,7 @@
     <frontend>
         <layout>
             <updates>
-                <tm_core>
+                <tm_core module="TM_Core">
                     <file>tm/core.xml</file>
                 </tm_core>
             </updates>
