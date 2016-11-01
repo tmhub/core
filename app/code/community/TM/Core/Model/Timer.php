@@ -62,4 +62,19 @@ class TM_Core_Model_Timer extends Varien_Object
         }
         return $time;
     }
+
+    /**
+     * Increase max_execution_time
+     *
+     * @param  int $value Seconds
+     * @return mixed
+     */
+    public function increaseTimeLimitTo($value)
+    {
+        $timeLimit = $this->getTimeLimit();
+        if ($value <= $timeLimit) {
+            return $timeLimit;
+        }
+        return @ini_set('max_execution_time', $value);
+    }
 }
