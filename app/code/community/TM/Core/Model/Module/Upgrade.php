@@ -577,16 +577,18 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
      */
     public function runEasytabs($data)
     {
-        $existing = Mage::getModel('easytabs/config')->getCollection();
         $isSingleStore = Mage::app()->isSingleStoreMode();
 
         foreach ($data as $tabData) {
-            $tab = Mage::getModel('easytabs/config');
+            $tab = Mage::getModel('easytabs/tab');
             $tab->setStoreId($this->getStoreIds());
 
             // backup existing tab with the same alias
             if (!empty($tabData['alias'])) {
-                $tmp = $existing->getItemsByColumnValue('alias', $tabData['alias']);
+                $tmp = Mage::getModel('easytabs/tab')->getCollection()
+                    ->addFilter('alias', array('eq' => $tabData['alias']))
+                    ->addFilter('product_tab', array('eq' => $tabData['product_tab']))
+                    ->walk('afterLoad');
                 foreach ($tmp as $tmbTab) {
                     if (!$tmbTab->getStatus()) {
                         continue;
