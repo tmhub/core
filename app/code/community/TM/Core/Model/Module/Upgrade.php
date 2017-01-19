@@ -530,8 +530,10 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
         $storesToKeep = Mage::getResourceModel('core/store_collection')->getAllIds();
         $storesToKeep = array_diff($storesToKeep, $storeIdsToRemove);
 
-        $relatedTabs = Mage::getModel('easytabs/config_collection');
-        $relatedTabs->addFieldToFilter('block', $type);
+        $relatedTabs = Mage::getModel('easytabs/tab')
+            ->getCollection()
+            ->addFieldToFilter('block', $type)
+            ->walk('afterLoad');
         foreach ($relatedTabs as $relatedTab) {
             if ($isSingleStore) {
                 $relatedTab->setStatus(0);
