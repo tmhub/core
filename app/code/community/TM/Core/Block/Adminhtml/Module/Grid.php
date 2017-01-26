@@ -39,6 +39,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         $this->addColumn('release_date', array(
             'header' => Mage::helper('tmcore')->__('Latest Release Date'),
             'index'  => 'release_date',
+            'filter' => false,
             'width'  => '180px',
             'type'   => 'datetime',
         ));
