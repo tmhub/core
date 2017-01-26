@@ -45,7 +45,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
         $this->addColumn('actions', array(
             'header'   => Mage::helper('tmcore')->__('Actions'),
-            'width'    => '200px',
+            'width'    => '250px',
             'filter'   => false,
             'sortable' => false,
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'

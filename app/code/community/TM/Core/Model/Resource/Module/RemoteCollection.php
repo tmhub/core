@@ -18,13 +18,13 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
             'version' => 'latest_version',
             'type' => 'type',
             'time' => 'release_date',
-            'extra.swissup.links.store' => 'link',
-            'extra.swissup.links.docs' => 'docs_link',
-            'extra.swissup.links.download' => 'download_link',
-            'extra.swissup.links.changelog' => 'changelog_link',
-            'extra.swissup.links.marketplace' => 'marketplace_link',
-            'extra.swissup.links.identity_key' => 'identity_key_link',
-            'extra.swissup.purchase_code' => 'purchase_code',
+            'extra.tm.links.store' => 'link',
+            'extra.tm.links.docs' => 'docs_link',
+            'extra.tm.links.download' => 'download_link',
+            'extra.tm.links.changelog' => 'changelog_link',
+            'extra.tm.links.marketplace' => 'marketplace_link',
+            'extra.tm.links.identity_key' => 'identity_key_link',
+            'extra.tm.purchase_code' => 'purchase_code',
         ];
     }
 

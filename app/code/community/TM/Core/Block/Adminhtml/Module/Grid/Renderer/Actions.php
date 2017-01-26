@@ -13,13 +13,21 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
     {
         $links = array();
 
-        if ($row->getChangelog()) {
+        if ($row->getDocsLink()) {
             $links[] = sprintf(
-                '<a href="javascript:void(0)" onclick="%s">%s</a><div style="display:none" class="changelog"><div class="title">%s</div><div class="content">%s</div></div>',
-                "tmcoreWindow.update(this.next('.changelog').down('.content').innerHTML, this.next('.changelog').down('.title').innerHTML).show()",
-                Mage::helper('tmcore')->__('Changelog'),
-                strip_tags($row->getCode()),
-                nl2br(htmlspecialchars($row->getChangelog()))
+                '<a href="%s" title="%s" onclick="window.open(this.href); return false;">%s</a>',
+                $row->getDownloadLink(),
+                Mage::helper('tmcore')->__('View Docs'),
+                Mage::helper('tmcore')->__('Docs')
+            );
+        }
+
+        if ($row->getChangelogLink()) {
+            $links[] = sprintf(
+                '<a href="%s" title="%s" onclick="window.open(this.href); return false;">%s</a>',
+                $row->getChangelogLink(),
+                Mage::helper('tmcore')->__('View Changelog'),
+                Mage::helper('tmcore')->__('Changelog')
             );
         }
 
