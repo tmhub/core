@@ -61,12 +61,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         if (!empty($response['packages'])) {
             foreach ($response['packages'] as $packageName => $info) {
                 $versions = array_keys($info);
-                $latestVersion = array_reduce($versions, function ($carry, $item) {
-                    if (version_compare($carry, $item) === -1) {
-                        $carry = $item;
-                    }
-                    return $carry;
-                });
+                $latestVersion = array_reduce($versions, array($this, '_getNewerVersion'));
                 if (!empty($info[$latestVersion]['type']) &&
                     $info[$latestVersion]['type'] === 'metapackage') {
 
@@ -161,6 +156,27 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         return $this;
     }
 
+    /**
+     * Get newer version between two of them
+     *
+     * @param  [type] $carry [description]
+     * @param  [type] $item  [description]
+     * @return string
+     */
+    protected function _getNewerVersion($carry, $item)
+    {
+        if (version_compare($carry, $item) === -1) {
+            return $item;
+        }
+        return $carry;
+    }
+
+    /**
+     * Trnasform composer-like package code to magento module code
+     *
+     * @param  string $packageName
+     * @return string
+     */
     public function _packageNameToCode($packageName)
     {
         $mapping = array(
