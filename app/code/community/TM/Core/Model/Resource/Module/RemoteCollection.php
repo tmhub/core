@@ -4,7 +4,29 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
 {
     const XML_FEED_URL_PATH = 'tmcore/modules/feed_url';
 
+    const RESPONSE_CACHE_KEY = 'tm_components_remote_response';
+
     protected $_collectedModules = array();
+
+    public function getMapping()
+    {
+        return [
+            'name' => 'name',
+            'code' => 'code',
+            'description' => 'description',
+            'keywords' => 'keywords',
+            'version' => 'latest_version',
+            'type' => 'type',
+            'time' => 'release_date',
+            'extra.swissup.links.store' => 'link',
+            'extra.swissup.links.docs' => 'docs_link',
+            'extra.swissup.links.download' => 'download_link',
+            'extra.swissup.links.changelog' => 'changelog_link',
+            'extra.swissup.links.marketplace' => 'marketplace_link',
+            'extra.swissup.links.identity_key' => 'identity_key_link',
+            'extra.swissup.purchase_code' => 'purchase_code',
+        ];
+    }
 
     /**
      * Lauch data collecting
@@ -20,113 +42,93 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         }
 
         try {
-            $client  = new Zend_Http_Client();
-            $adapter = new Zend_Http_Client_Adapter_Curl();
-            $client->setAdapter($adapter);
-            $client->setUri($this->_getFeedUri());
-            $client->setConfig(array('maxredirects'=>0, 'timeout'=>30));
-            $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
-            $responseBody = $client->request()->getBody();
-            $modules      = Mage::helper('core')->jsonDecode($responseBody);
-            if (!is_array($modules)) {
-                throw new Exception('Decoding failed');
+            if (!$responseBody = Mage::app()->loadCache(self::RESPONSE_CACHE_KEY)) {
+                $responseBody = $this->_fetch($this->_getFeedUri());
+                Mage::app()->saveCache($responseBody, self::RESPONSE_CACHE_KEY);
             }
-        } catch (Exception $e) {
-            // @todo remove this fix and add error message
-            $modules = array(
-                'TM_Core' => array(
-                    'code'          => 'TM_Core',
-                    'version'       => '',
-                    'changelog'     => '',
-                    'link'          => '',
-                    'download_link' => '',
-                    'identity_key_link' => ''
-                ),
-                'TM_License' => array(
-                    'code'          => 'TM_License',
-                    'version'       => '',
-                    'changelog'     => '',
-                    'link'          => '',
-                    'download_link' => '',
-                    'identity_key_link' => ''
-                ),
-                'TM_Argento' => array(
-                    'code'          => 'TM_Argento',
-                    'version'       => '',
-                    'changelog'     => '',
-                    'link'          => '',
-                    'download_link' => '',
-                    'identity_key_link' => '',
-                    'changelog'     => ""
-                ),
-                'TM_ArgentoArgento' => array(
-                    'code'          => 'TM_ArgentoArgento',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
-                ),
-                'TM_ArgentoFlat' => array(
-                    'code'          => 'TM_ArgentoFlat',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
-                ),
-                'TM_ArgentoMage2Cloud' => array(
-                    'code'          => 'TM_ArgentoMage2Cloud',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => '',
-                    'identity_key_link' => ''
-                ),
-                'TM_ArgentoMall' => array(
-                    'code'          => 'TM_ArgentoMall',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
-                ),
-                'TM_ArgentoPure' => array(
-                    'code'          => 'TM_ArgentoPure',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
-                ),
-                'TM_ArgentoPure2' => array(
-                    'code'          => 'TM_ArgentoPure2',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => 'https://argentotheme.com/downloadable/customer/products/',
-                    'identity_key_link' => 'https://argentotheme.com/license/customer/identity/'
-                ),
-                'TM_ArgentoTM' => array(
-                    'code'          => 'TM_ArgentoTM',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://argentotheme.com',
-                    'download_link' => '',
-                    'identity_key_link' => ''
-                ),
-                'Swissup_Subscription' => array(
-                    'code'          => 'Swissup_Subscription',
-                    'version'       => '',
-                    'changelog'     => "",
-                    'link'          => 'http://swissuplabs.com',
-                    'download_link' => 'https://swissuplabs.com/subscription/customer/products/',
-                    'identity_key_link' => 'https://swissuplabs.com/license/customer/identity/'
-                )
-            );
+            $response = Mage::helper('core')->jsonDecode($responseBody);
+        } catch (\Exception $e) {
+            $response = array();
+            // Swissup_Subscription will be added below - used by
+            // subscription activation module
         }
 
-        foreach ($modules as $moduleName => $values) {
+        if (!is_array($response)) {
+            $response = array();
+        }
+
+        $modules = array();
+        if (!empty($response['packages'])) {
+            foreach ($response['packages'] as $packageName => $info) {
+                $versions = array_keys($info);
+                $latestVersion = array_reduce($versions, function ($carry, $item) {
+                    if (version_compare($carry, $item) === -1) {
+                        $carry = $item;
+                    }
+                    return $carry;
+                });
+                if (!empty($info[$latestVersion]['type']) &&
+                    $info[$latestVersion]['type'] === 'metapackage') {
+
+                    continue;
+                }
+                $code = $this->_packageNameToCode($packageName);
+                $modules[$code] = $info[$latestVersion];
+                $modules[$code]['code'] = $code;
+            }
+        }
+        $modules['Swissup_Subscription'] = [
+            'name'          => 'swissup/subscription',
+            'code'          => 'Swissup_Subscription',
+            'type'          => 'subscription-plan',
+            'description'   => 'SwissUpLabs Modules Subscription',
+            'version'       => '',
+            'extra' => [
+                'swissup' => [
+                    'links' => [
+                        'store' => 'https://swissuplabs.com',
+                        'download' => 'https://swissuplabs.com/subscription/customer/products/',
+                        'identity_key' => 'https://swissuplabs.com/license/customer/identity/'
+                    ]
+                ]
+            ]
+        ];
+
+        // fix for argento themes
+        $argento = array(
+            'TM_ArgentoArgento',
+            'TM_ArgentoFlat',
+            'TM_ArgentoMall',
+            'TM_ArgentoPure',
+            'TM_ArgentoPure2',
+            'TM_ArgentoLuxury',
+        );
+        foreach ($argento as $theme) {
+            if (!isset($modules[$theme])) {
+                $modules[$theme] = $modules['TM_Argento'];
+                $modules[$theme]['code'] = $theme;
+            }
+        }
+
+        $result = array();
+        foreach ($modules as $code => $config) {
+            foreach ($this->getMapping() as $source => $destination) {
+                $value = $config;
+                foreach (explode('.', $source) as $key) {
+                    if (!isset($value[$key])) {
+                        continue 2;
+                    }
+                    $value = $value[$key];
+                }
+
+                if (is_array($value)) {
+                    $value = implode(',', $value);
+                }
+                $result[$code][$destination] = $value;
+            }
+        }
+
+        foreach ($result as $moduleName => $values) {
             $values['id'] = $values['code'];
             $this->_collectedModules[$values['code']] = $values;
         }
@@ -156,10 +158,94 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         return $this;
     }
 
+    public function _packageNameToCode($packageName)
+    {
+        $mapping = array(
+            'tm/argento_mage2cloud' => 'TM_ArgentoMage2Cloud',
+            'tm/argento_tm'         => 'TM_ArgentoTM',
+            'tm/cdn'                => 'TM_CDN',
+            'tm/countdowntimer'     => 'TM_CountdownTimer',
+            'tm/dailydeals'         => 'TM_DailyDeals',
+            'tm/easycatalogimg'     => 'TM_EasyCatalogImg',
+            'tm/easycolorswatches'  => 'TM_EasyColorSwatches',
+            'tm/easyflags'          => 'TM_EasyFlags',
+            'tm/easylightbox'       => 'TM_EasyLightbox',
+            'tm/easynavigation'     => 'TM_EasyNavigation',
+            'tm/easytabs'           => 'TM_EasyTabs',
+            'tm/facebooklb'         => 'TM_FacebookLB',
+            'tm/firecheckout'       => 'TM_FireCheckout',
+            'tm/lightboxpro'        => 'TM_LightboxPro',
+            'tm/mobileswitcher'     => 'TM_MobileSwitcher',
+            'tm/newsletterbooster'  => 'TM_NewsletterBooster',
+            'tm/orderattachment'    => 'TM_OrderAttachment',
+            'tm/productvideos'      => 'TM_ProductVideos',
+            'tm/quickshopping'      => 'TM_QuickShopping',
+            'tm/richsnippets'       => 'TM_RichSnippets',
+            'tm/smartsuggest'       => 'TM_SmartSuggest',
+            'tm/suggestpage'        => 'TM_SuggestPage',
+            'tm/demo-deployer'      => 'TM_Deployer',
+        );
+
+        if (isset($mapping[$packageName])) {
+            return $mapping[$packageName];
+        }
+
+        list($vendor, $module) = explode('/', $packageName, 2);
+        if ($vendor === 'tm') {
+            $vendor = 'TM';
+        } else {
+            $vendor = ucfirst($vendor);
+        }
+
+        $module = ucwords(str_replace(array('_', '-'), ' ', $module));
+        $module = str_replace(' ', '', $module);
+
+        return $vendor . '_' . $module;;
+    }
+
+    /**
+     * Make a http request and return response body
+     *
+     * @param  string $url
+     * @return string
+     */
+    protected function _fetch($url)
+    {
+        $client = new Zend_Http_Client();
+        $adapter = new Zend_Http_Client_Adapter_Curl();
+        $client->setAdapter($adapter);
+        $client->setUri($url);
+        $client->setConfig(array(
+            'maxredirects' => 5,
+            'timeout' => 30
+        ));
+        $client->setParameterGet('domain', Mage::app()->getRequest()->getHttpHost());
+        return $client->request()->getBody();
+    }
+
+    /**
+     * Get feed url from satis repository.
+     *
+     * To do that we send a request to http://tmhub.github.io/packages/packages.json,
+     * which returns actual packages list url: http://tmhub.github.io/packages/include/all${sha1}.json
+     *
+     * @return string
+     */
     protected function _getFeedUri()
     {
         $useHttps = Mage::getStoreConfigFlag(TM_Core_Model_Module::XML_USE_HTTPS_PATH);
-        return ($useHttps ? 'https://' : 'http://')
-            . Mage::getStoreConfig(self::XML_FEED_URL_PATH);
+        $url = Mage::getStoreConfig(self::XML_FEED_URL_PATH);
+
+        // http://tmhub.github.io/packages/packages.json
+        $url = ($useHttps ? 'https://' : 'http://') . $url;
+
+        $response = $this->_fetch($url . '/packages.json');
+        $response = Mage::helper('core')->jsonDecode($response);
+        if (!is_array($response) || !isset($response['includes'])) {
+            return false;
+        }
+
+        // http://tmhub.github.io/packages/include/all${sha1}.json
+        return $url . '/' . key($response['includes']);
     }
 }

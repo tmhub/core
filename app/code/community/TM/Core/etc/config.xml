@@ -128,7 +128,7 @@
         </subscriptionchecker>
         <tmcore>
             <modules>
-                <feed_url>templates-master.com/modules.json</feed_url>
+                <feed_url>tmhub.github.io/packages</feed_url>
             </modules>
             <license>
                 <use_https>1</use_https>

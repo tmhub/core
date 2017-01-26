@@ -104,7 +104,7 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
         if ($remote) {
             $remote      = $remote->toArray();
             $result      = $remote;
-            $version     = $remote['version'];
+            $version     = $remote['latest_version'];
             $dataVersion = '';
             if (isset($remote['data_version'])) {
                 $dataVersion = $remote['data_version'];

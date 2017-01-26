@@ -6,8 +6,8 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
     {
         parent::__construct();
         $this->setId('moduleGrid');
-        $this->setDefaultSort('code');
-        $this->setDefaultDir('ASC');
+        $this->setDefaultSort('release_date');
+        $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
         $this->setVarNameFilter('module_filter');
@@ -29,26 +29,18 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         ));
 
         $this->addColumn('version', array(
-            'header' => Mage::helper('tmcore')->__('Local Version'),
-            'align'  => 'right',
+            'header' => Mage::helper('tmcore')->__('Version'),
+            'align'  => 'center',
+            'renderer' => 'tmcore/adminhtml_module_grid_renderer_version',
             'index'  => 'version',
-            'width'  => '80px'
+            'width'  => '150px'
         ));
 
-        $this->addColumn('latest_version', array(
-            'header' => Mage::helper('tmcore')->__('Latest Version'),
-            'align'  => 'right',
-            'index'  => 'latest_version',
-            'width'  => '80px'
-        ));
-
-        $this->addColumn('version_status', array(
-            'header'   => Mage::helper('tmcore')->__('Version Status'),
-            'width'    => '60px',
-            'index'    => 'version_status',
-            'renderer' => 'tmcore/adminhtml_module_grid_renderer_versionStatus',
-            'type'     => 'options',
-            'options'  => Mage::getModel('tmcore/module')->getVersionStatuses()
+        $this->addColumn('release_date', array(
+            'header' => Mage::helper('tmcore')->__('Latest Release Date'),
+            'index'  => 'release_date',
+            'width'  => '180px',
+            'type'   => 'datetime',
         ));
 
         $this->addColumn('actions', array(
