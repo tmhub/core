@@ -75,6 +75,9 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 $code = $this->_packageNameToCode($packageName);
                 $modules[$code] = $info[$latestVersion];
                 $modules[$code]['code'] = $code;
+                if (isset($info['dev-master']['extra']['tm'])) {
+                    $modules[$code]['extra']['tm'] = $info['dev-master']['extra']['tm'];
+                }
             }
         }
         $modules['Swissup_Subscription'] = [
