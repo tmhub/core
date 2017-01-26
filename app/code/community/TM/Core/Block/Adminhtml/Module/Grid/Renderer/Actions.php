@@ -16,7 +16,7 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
         if ($row->getDocsLink()) {
             $links[] = sprintf(
                 '<a href="%s" title="%s" onclick="window.open(this.href); return false;">%s</a>',
-                $row->getDownloadLink(),
+                $row->getDocsLink(),
                 Mage::helper('tmcore')->__('View Docs'),
                 Mage::helper('tmcore')->__('Docs')
             );
