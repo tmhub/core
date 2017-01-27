@@ -46,7 +46,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
         $this->addColumn('actions', array(
             'header'   => Mage::helper('tmcore')->__('Actions'),
-            'width'    => '250px',
+            'width'    => '160px',
             'filter'   => false,
             'sortable' => false,
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_actions'
@@ -62,9 +62,6 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
 
     public function getRowUrl($row)
     {
-        if ($row->hasUpgradesDir() || $row->getIdentityKeyLink()) {
-            return $this->getUrl('*/*/manage', array('id' => $row->getId()));
-        }
         return false;
     }
 }
