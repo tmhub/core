@@ -33,6 +33,13 @@
         </reference>
     </tmcore_popup>
 
+    <tmcore_actions>
+        <reference name="head">
+            <action method="addJs"><script>tm/adminhtml/core/actions.js</script></action>
+            <action method="addItem"><type>js_css</type><name>tm/adminhtml/core/actions.css</name><params/></action>
+        </reference>
+    </tmcore_actions>
+
     <adminhtml_tmcore_support_index>
         <reference name="content">
             <block type="tmcore/adminhtml_support_list" name="support.list"/>

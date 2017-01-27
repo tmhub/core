@@ -1,0 +1,38 @@
+.tm-action-select-wrap {
+    position: relative;
+}
+.tm-action-select {
+    text-decoration: none;
+    padding-right: 15px;
+    position: relative;
+}
+.tm-action-select::after {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+
+    content: "";
+    transition: transform .2s;
+    width: 0;
+    height: 0;
+    margin-top: -0.15em;
+    border: 0.3em solid transparent;
+    border-top-color: #ea7601;
+    border-bottom: none;
+}
+.tm-action-menu {
+    z-index: 10;
+    position: absolute;
+    top: 18px;
+    background: #fff;
+    padding: 2px 7px;
+    border: 1px solid #aaa;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+.tm-action-menu li {
+    margin: 5px 0;
+}
+.tm-action-menu a {
+    display: block;
+    text-decoration: none;
+}
