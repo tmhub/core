@@ -116,6 +116,44 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
         $this->_redirect('*/*/');
     }
 
+    /**
+     * Run module upgrades
+     */
+    public function upgradeAction()
+    {
+        $id = $this->getRequest()->getParam('id');
+        if (!$id) {
+            $this->_redirect('*/*/');
+        }
+
+        /**
+         * @var TM_Core_Model_Module
+         */
+        $module = Mage::getModel('tmcore/module');
+        $module->load($id);
+        $module->up();
+
+        $groupedErrors = $module->getMessageLogger()->getErrors();
+        if (count($groupedErrors)) {
+            foreach ($groupedErrors as $type => $errors) {
+                foreach ($errors as $error) {
+                    if (is_array($error)) {
+                        $message = $error['message'];
+                    } else {
+                        $message = $error;
+                    }
+                    Mage::getSingleton('adminhtml/session')->addError($message);
+                }
+            }
+            return $this->_redirect('*/*/', array('id' => $module->getId()));
+        }
+
+        Mage::getSingleton('adminhtml/session')->addSuccess(
+            Mage::helper('tmcore')->__("Module upgrades successfully applied")
+        );
+        $this->_redirect('*/*/');
+    }
+
     protected function _isAllowed()
     {
         return Mage::getSingleton('admin/session')->isAllowed('templates_master/tmcore_module');
