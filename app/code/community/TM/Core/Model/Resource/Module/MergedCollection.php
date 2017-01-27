@@ -53,6 +53,8 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
                 array(
                     'id'           => $code,
                     'data_version' => $module->getDataVersion(),
+                    'version'      => $module->getVersion(),
+                    'release_date' => null,
                     'code'         => $code,
                     'available_upgrades' => $module->getUpgradesToRun()
                 ),
