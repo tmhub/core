@@ -102,19 +102,8 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
     {
         $result = array();
         if ($remote) {
-            $remote      = $remote->toArray();
-            $result      = $remote;
-            $version     = $remote['latest_version'];
-            $dataVersion = '';
-            if (isset($remote['data_version'])) {
-                $dataVersion = $remote['data_version'];
-            }
-
-            unset($result['version']);
-            unset($result['data_version']);
-
-            $result['latest_version'] = $version;
-            $result['latest_data_version'] = $dataVersion;
+            $remote = $remote->toArray();
+            $result = $remote;
             $result['version_status'] = $this->_getVersionStatusLabel($local, $remote);
         }
         return array_merge($local, $result);
@@ -129,11 +118,8 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
      */
     private function _getVersionStatusLabel(array $local, array $remote = array())
     {
-        $versionCompare = version_compare($local['version'], $remote['version']);
+        $versionCompare = version_compare($local['version'], $remote['latest_version']);
         $dataCompare    = 0;
-        if (isset($remote['data_version'])) {
-            $dataCompare = version_compare($local['data_version'], $remote['data_version']);
-        }
         if ($local['available_upgrades']) {
             $dataCompare = -1;
         }
