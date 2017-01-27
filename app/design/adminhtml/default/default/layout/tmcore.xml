@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <layout>
     <adminhtml_tmcore_module_index>
+        <update handle="tmcore_actions"/>
         <update handle="tmcore_popup"/>
         <reference name="content">
             <block type="tmcore/adminhtml_module" name="module.list"/>

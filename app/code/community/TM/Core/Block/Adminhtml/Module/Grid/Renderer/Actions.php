@@ -1,7 +1,6 @@
 <?php
 
-class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
-    extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
+class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions extends TM_Core_Block_Adminhtml_Renderer_Actions
 {
     /**
      * Renders grid column
@@ -9,7 +8,7 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
      * @param   Varien_Object $row
      * @return  string
      */
-    public function render(Varien_Object $row)
+    public function getActions(Varien_Object $row)
     {
         $links = array();
 
@@ -17,8 +16,8 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
             $links[] = sprintf(
                 '<a href="%s" title="%s" onclick="window.open(this.href); return false;">%s</a>',
                 $row->getDocsLink(),
-                Mage::helper('tmcore')->__('View Docs'),
-                Mage::helper('tmcore')->__('Docs')
+                Mage::helper('tmcore')->__('Read Documentation'),
+                Mage::helper('tmcore')->__('Read Documentation')
             );
         }
 
@@ -27,7 +26,7 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
                 '<a href="%s" title="%s" onclick="window.open(this.href); return false;">%s</a>',
                 $row->getChangelogLink(),
                 Mage::helper('tmcore')->__('View Changelog'),
-                Mage::helper('tmcore')->__('Changelog')
+                Mage::helper('tmcore')->__('View Changelog')
             );
         }
 
@@ -44,10 +43,10 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Actions
             $links[] = sprintf(
                 '<a href="%s">%s</a>',
                 $this->getUrl('*/*/manage/', array('_current' => true, 'id' => $row->getId())),
-                Mage::helper('tmcore')->__('Manage')
+                Mage::helper('tmcore')->__('Open Installer')
             );
         }
 
-        return implode(' | ', $links);
+        return $links;
     }
 }
