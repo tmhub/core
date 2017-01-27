@@ -1,3 +1,6 @@
+.grid .hor-scroll {
+    overflow: visible;
+}
 .tm-action-select-wrap {
     position: relative;
 }
