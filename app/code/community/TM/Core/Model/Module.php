@@ -247,7 +247,8 @@ class TM_Core_Model_Module extends Mage_Core_Model_Abstract
      */
     public function getNewStores()
     {
-        return $this->getNewStoreIds();
+        $storeIds = $this->getNewStoreIds();
+        return is_null($storeIds) ? array() : $storeIds;
     }
 
     public function isInstalled()
