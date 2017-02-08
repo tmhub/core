@@ -28,17 +28,23 @@ class TM_Core_Block_Adminhtml_Renderer_Actions extends Mage_Adminhtml_Block_Widg
         }
 
         $result = '<div class="tm-action-select-wrap">';
-        $result .= '<a href="javascript:void(0)" class="tm-action-select">'
-            . Mage::helper('adminhtml')->__('Select')
-            . '</a>';
+        if (count($actions) > 1) {
+            $result .= '<a href="javascript:void(0)" class="tm-action-select">'
+                . Mage::helper('adminhtml')->__('Select')
+                . '</a>';
 
-        $result .= '<ul class="tm-action-menu" style="display: none;">';
-        foreach ($actions as $action) {
-            $result .= '<li>' . $action . '</li>';
+            $result .= '<ul class="tm-action-menu">';
+            foreach ($actions as $action) {
+                $result .= '<li>' . $action . '</li>';
+            }
+            $result .= '</ul>';
+        } else {
+            foreach ($actions as $action) {
+                $result .= $action;
+            }
         }
-        $result .= '</ul>';
-
         $result .= '</div>';
+
         return $result;
     }
 }

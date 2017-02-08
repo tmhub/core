@@ -4,6 +4,9 @@
 .tm-action-select-wrap {
     position: relative;
 }
+.tm-action-select-wrap a {
+    text-decoration: none;
+}
 .tm-action-select {
     text-decoration: none;
     padding-right: 15px;
