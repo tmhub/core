@@ -68,6 +68,31 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
                 );
         }
 
+        // merge remote modules, that are not available locally
+        $remoteCodes = $remoteCollection->getColumnValues('code');
+        $localCodes = array_keys($this->_collectedModules);
+        $newCodes = array_diff($remoteCodes, $localCodes);
+        foreach ($newCodes as $code) {
+            if (0 !== strpos($code, 'TM_')) {
+                continue;
+            }
+
+            $module = new $this->_itemObjectClass();
+            $localData = array(
+                'id'           => $code,
+                'data_version' => $module->getDataVersion(),
+                'version'      => $module->getVersion(),
+                'release_date' => null,
+                'code'         => $code,
+                'available_upgrades' => $module->getUpgradesToRun()
+            );
+            $this->_collectedModules[$code] =
+                $this->_syncLocalAndRemoteData(
+                    $localData,
+                    $remoteCollection->getItemById($code)
+                );
+        }
+
         $this->_filterAndSort();
 
         // calculate totals
