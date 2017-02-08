@@ -67,6 +67,9 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
 
                     continue;
                 }
+                if ($latestVersion === 'dev-master') {
+                    continue;
+                }
                 $code = $this->_packageNameToCode($packageName);
                 $modules[$code] = $info[$latestVersion];
                 $modules[$code]['code'] = $code;
