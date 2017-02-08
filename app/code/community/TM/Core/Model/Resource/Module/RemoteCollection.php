@@ -96,17 +96,24 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         ];
 
         // fix for argento themes
-        $argento = array(
-            'TM_ArgentoArgento',
-            'TM_ArgentoFlat',
-            'TM_ArgentoMall',
-            'TM_ArgentoPure',
-            'TM_ArgentoPure2',
-            'TM_ArgentoLuxury',
-        );
-        foreach ($argento as $theme) {
-            if (!isset($modules[$theme])) {
-                $modules[$theme] = $modules['TM_Argento'];
+        if (isset($modules['TM_Argento'])) {
+            $argento = array(
+                'TM_ArgentoArgento',
+                'TM_ArgentoFlat',
+                'TM_ArgentoMall',
+                'TM_ArgentoPure',
+                'TM_ArgentoPure2',
+                'TM_ArgentoLuxury',
+            );
+            foreach ($argento as $theme) {
+                if (!isset($modules[$theme])) {
+                    $modules[$theme] = array();
+                }
+
+                $modules[$theme] = array_merge(
+                    $modules['TM_Argento'],
+                    $modules[$theme]
+                );
                 $modules[$theme]['code'] = $theme;
             }
         }
