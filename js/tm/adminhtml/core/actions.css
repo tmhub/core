@@ -26,7 +26,11 @@
     border-top-color: #ea7601;
     border-bottom: none;
 }
+.active .tm-action-select::after {
+    transform: rotate(180deg);
+}
 .tm-action-menu {
+    display: none;
     z-index: 10;
     position: absolute;
     top: 18px;
@@ -35,10 +39,12 @@
     border: 1px solid #aaa;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
+.active .tm-action-menu {
+    display: block;
+}
 .tm-action-menu li {
     margin: 5px 0;
 }
 .tm-action-menu a {
     display: block;
-    text-decoration: none;
 }

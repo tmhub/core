@@ -4,13 +4,13 @@ TmcoreActions.prototype = {
         document.on('click', '.tm-action-select', function(e, el) {
             e.stop();
 
-            var menu = el.next(),
-                isVisible = menu.visible();
+            var wrapper = el.up(),
+                isVisible = wrapper.hasClassName('active');
 
-            $$('.tm-action-menu').invoke('hide');
+            $$('.tm-action-select-wrap').invoke('removeClassName', 'active');
 
             if (!isVisible) {
-                el.next().show();
+                wrapper.addClassName('active');
             }
         });
     }
