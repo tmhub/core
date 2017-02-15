@@ -10,7 +10,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
 
     public function getMapping()
     {
-        return [
+        return array(
             'name' => 'name',
             'code' => 'code',
             'description' => 'description',
@@ -25,7 +25,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
             'extra.tm.links.marketplace' => 'marketplace_link',
             'extra.tm.links.identity_key' => 'identity_key_link',
             'extra.tm.purchase_code' => 'purchase_code',
-        ];
+        );
     }
 
     /**
@@ -78,22 +78,22 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
                 }
             }
         }
-        $modules['Swissup_Subscription'] = [
+        $modules['Swissup_Subscription'] = array(
             'name'          => 'swissup/subscription',
             'code'          => 'Swissup_Subscription',
             'type'          => 'subscription-plan',
             'description'   => 'SwissUpLabs Modules Subscription',
             'version'       => '',
-            'extra' => [
-                'swissup' => [
-                    'links' => [
+            'extra' => array(
+                'swissup' => array(
+                    'links' => array(
                         'store' => 'https://swissuplabs.com',
                         'download' => 'https://swissuplabs.com/subscription/customer/products/',
                         'identity_key' => 'https://swissuplabs.com/license/customer/identity/'
-                    ]
-                ]
-            ]
-        ];
+                    )
+                )
+            )
+        );
 
         // fix for argento themes
         if (isset($modules['TM_Argento'])) {
