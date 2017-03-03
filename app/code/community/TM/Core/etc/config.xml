@@ -76,6 +76,14 @@
                     </tmcore>
                 </observers>
             </controller_action_predispatch>
+            <catalog_product_save_commit_after>
+                <observers>
+                    <tmcore>
+                        <class>tmcore/observer</class>
+                        <method>updateInvalidatedBlockHtmlCache</method>
+                    </tmcore>
+                </observers>
+            </catalog_product_save_commit_after>
         </events>
         <translate>
             <modules>

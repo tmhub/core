@@ -63,4 +63,17 @@ class TM_Core_Model_Observer
             $layout->getBlock('content')->append($debug);
         }
     }
+
+    /**
+     * Refreshes block cache after saving the product. Fix message:
+     * "One or more of the Cache Types are invalidated: Blocks HTML output."
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function updateInvalidatedBlockHtmlCache($observer)
+    {
+        Mage::app()->getCacheInstance()
+            ->cleanType(Mage_Core_Block_Abstract::CACHE_GROUP);
+    }
+
 }
