@@ -22,10 +22,10 @@ class TM_Core_Block_Adminhtml_Module_Grid_Renderer_Version
         $result = version_compare($currentVersion, $latestVersion, '>=');
         if ($result) {
             $severity = 'grid-severity-notice';
-            $title = __('Module is up to date');
+            $title = $this->__('Module is up to date');
         } else {
             $severity = 'grid-severity-major';
-            $title = __("The latest version is %s", $latestVersion);
+            $title = $this->__("The latest version is %s", $latestVersion);
         }
 
         return '<span class="' . $severity . '" title="' . $title . '"><span>'
