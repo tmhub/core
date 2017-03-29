@@ -8,6 +8,9 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         $this->setId('moduleGrid');
         $this->setDefaultSort('release_date');
         $this->setDefaultDir('DESC');
+        $this->setDefaultFilter(array(
+            'version' => TM_Core_Block_Adminhtml_Module_Grid_Filter_Version::VERSION_AVAILABLE
+        ));
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(true);
         $this->setVarNameFilter('module_filter');
@@ -31,6 +34,7 @@ class TM_Core_Block_Adminhtml_Module_Grid extends Mage_Adminhtml_Block_Widget_Gr
         $this->addColumn('version', array(
             'header' => Mage::helper('tmcore')->__('Version'),
             'align'  => 'center',
+            'filter' => 'tmcore/adminhtml_module_grid_filter_version',
             'renderer' => 'tmcore/adminhtml_module_grid_renderer_version',
             'index'  => 'version',
             'width'  => '150px'
