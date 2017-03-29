@@ -18,7 +18,7 @@ class TM_Core_Block_Adminhtml_Module_Grid_Filter_Version
         foreach (self::$_options as $code => $label) {
             $result[] = array(
                 'value' => $code,
-                'label' => Mage::helper('adminhtml')->__($label)
+                'label' => Mage::helper('tmcore')->__($label)
             );
         }
 
