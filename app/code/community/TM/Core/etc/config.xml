@@ -46,6 +46,11 @@
                 </connection>
             </tm_core_setup>
         </resources>
+        <!-- nginx ip detection. @see Mage::helper('core/http')->getRemoteAddrHeaders() -->
+        <remote_addr_headers>
+            <header_tmcore_http_x_real_ip>HTTP_X_REAL_IP</header_tmcore_http_x_real_ip>
+            <header_tmcore_http_x_forewarded_for>HTTP_X_FORWARDED_FOR</header_tmcore_http_x_forewarded_for>
+        </remote_addr_headers>
         <events>
             <core_layout_update_updates_get_after>
                 <observers>
