@@ -132,6 +132,8 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
             $remote = $remote->toArray();
             $result = $remote;
             $result['version_status'] = $this->_getVersionStatusLabel($local, $remote);
+        } else {
+            $result['version_status'] = $this->_getVersionStatusLabel($local, array());
         }
         return array_merge($local, $result);
     }
@@ -145,8 +147,12 @@ class TM_Core_Model_Resource_Module_MergedCollection extends Varien_Data_Collect
      */
     private function _getVersionStatusLabel(array $local, array $remote = array())
     {
-        $versionCompare = version_compare($local['version'], $remote['latest_version']);
-        $dataCompare    = 0;
+        if (isset($remote['latest_version'])) {
+            $versionCompare = version_compare($local['version'], $remote['latest_version']);
+        } else {
+            $versionCompare = 0;
+        }
+        $dataCompare = 0;
         if ($local['available_upgrades']) {
             $dataCompare = -1;
         }
