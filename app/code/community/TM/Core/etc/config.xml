@@ -12,11 +12,6 @@
                 <class>TM_Core_Model</class>
                 <resourceModel>tmcore_resource</resourceModel>
             </tmcore>
-            <core>
-                <rewrite>
-                    <file_validator_image>TM_Core_Model_File_Validator_Image</file_validator_image>
-                </rewrite>
-            </core>
             <tmcore_resource>
                 <class>TM_Core_Model_Resource</class>
                 <entities>
