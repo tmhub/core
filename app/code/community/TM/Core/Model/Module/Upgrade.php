@@ -522,7 +522,7 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
      * @param  array $storeIdsToRemove
      * @return void
      */
-    public function unsetEasytab($type, $storeIdsToRemove)
+    public function unsetEasytab($type, $storeIdsToRemove, $alias = null)
     {
         $isSingleStore = Mage::app()->isSingleStoreMode();
 
@@ -530,10 +530,14 @@ abstract class TM_Core_Model_Module_Upgrade extends Varien_Object
         $storesToKeep = Mage::getResourceModel('core/store_collection')->getAllIds();
         $storesToKeep = array_diff($storesToKeep, $storeIdsToRemove);
 
-        $relatedTabs = Mage::getModel('easytabs/tab')
-            ->getCollection()
-            ->addFieldToFilter('block', $type)
-            ->walk('afterLoad');
+        $relatedTabs = Mage::getModel('easytabs/tab')->getCollection();
+        if (isset($type)) {
+            $relatedTabs->addFieldToFilter('block', $type);
+        }
+        if (isset($alias)) {
+            $relatedTabs->addFieldToFilter('alias', $alias);
+        }
+        $relatedTabs->walk('afterLoad');
         foreach ($relatedTabs as $relatedTab) {
             if ($isSingleStore) {
                 $relatedTab->setStatus(0);
