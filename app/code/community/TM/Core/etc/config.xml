@@ -2,7 +2,7 @@
 <config>
     <modules>
         <TM_Core>
-            <version>1.5.8</version>
+            <version>1.6.0</version>
         </TM_Core>
     </modules>
 
@@ -89,6 +89,22 @@
                     </tmcore>
                 </observers>
             </catalog_product_save_commit_after>
+            <tm_core_module_collection_load_before>
+                <observers>
+                    <tmcore>
+                        <class>tmcore/observer_module</class>
+                        <method>loadRemoteData</method>
+                    </tmcore>
+                </observers>
+            </tm_core_module_collection_load_before>
+            <tm_core_module_collection_load_after>
+                <observers>
+                    <tmcore>
+                        <class>tmcore/observer_module</class>
+                        <method>addModuleData</method>
+                    </tmcore>
+                </observers>
+            </tm_core_module_collection_load_after>
         </events>
         <translate>
             <modules>

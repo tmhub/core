@@ -29,9 +29,9 @@ class TM_Core_Block_Adminhtml_Module_Grid_Filter_Version
     {
         switch ($this->getValue()) {
             case self::VERSION_AVAILABLE:
-                return array('neq' => '');
+                return array('notnull' => true);
             case self::VERSION_UNAVAILABLE:
-                return array('eq' => '');
+                return array('null' => true);
             default:
                 return null;
         }

@@ -72,23 +72,23 @@ class TM_Core_Adminhtml_Tmcore_ModuleController extends Mage_Adminhtml_Controlle
             ->setNewStores($this->getRequest()->getPost('new_stores', array()))
             ->setIdentityKey($this->getRequest()->getParam('identity_key'));
 
-        $result = $module->validateLicense();
-        if (is_array($result) && isset($result['error'])) {
-            Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
+        // $result = $module->validateLicense();
+        // if (is_array($result) && isset($result['error'])) {
+        //     Mage::getSingleton('adminhtml/session')->setFormData($this->getRequest()->getPost());
 
-            $error = call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error']);
-            if (isset($result['response'])) {
-                Mage::getSingleton('adminhtml/session')->setTmValidationInfo(
-                    array(
-                        'error'    => $error,
-                        'response' => $result['response']
-                    )
-                );
-            } else {
-                Mage::getSingleton('adminhtml/session')->addError($error);
-            }
-            return $this->_redirect('*/*/manage', array('id' => $module->getId()));
-        }
+        //     $error = call_user_func_array(array(Mage::helper('tmcore'), '__'), $result['error']);
+        //     if (isset($result['response'])) {
+        //         Mage::getSingleton('adminhtml/session')->setTmValidationInfo(
+        //             array(
+        //                 'error'    => $error,
+        //                 'response' => $result['response']
+        //             )
+        //         );
+        //     } else {
+        //         Mage::getSingleton('adminhtml/session')->addError($error);
+        //     }
+        //     return $this->_redirect('*/*/manage', array('id' => $module->getId()));
+        // }
 
         $module->up();
 
