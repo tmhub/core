@@ -40,31 +40,4 @@
             <action method="addItem"><type>js_css</type><name>tm/adminhtml/core/actions.css</name><params/></action>
         </reference>
     </tmcore_actions>
-
-    <adminhtml_tmcore_support_index>
-        <reference name="content">
-            <block type="tmcore/adminhtml_support_list" name="support.list"/>
-        </reference>
-    </adminhtml_tmcore_support_index>
-
-    <adminhtml_tmcore_support_edit>
-        <reference name="content">
-            <block type="tmcore/adminhtml_support_edit" name="support.edit"/>
-        </reference>
-        <reference name="left">
-            <block type="tmcore/adminhtml_support_edit_tabs" name="tmcore_support_edit_tabs">
-                <block type="tmcore/adminhtml_support_edit_tab_main" name="adminhtml_support_edit_tab_main" />
-                <!-- -->
-                <action method="addTab">
-                    <name>main_section</name>
-                    <block>adminhtml_support_edit_tab_main</block>
-                </action>
-                <!-- -->
-            </block>
-        </reference>
-    </adminhtml_tmcore_support_edit>
-
-    <adminhtml_tmcore_support_new>
-        <update handle="adminhtml_tmcore_support_edit"/>
-    </adminhtml_tmcore_support_new>
 </layout>
