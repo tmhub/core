@@ -177,7 +177,7 @@ class TM_Core_Helper_Firephp extends Mage_Core_Helper_Abstract
      * @param  string  $label OPTIONAL Label to prepend to the log event.
      * @return boolean Returns TRUE if the variable was added to the response headers or buffered.
      */
-    public function class($var, $label = '')
+    public function getClass($var, $label = '')
     {
         $var = is_object($var) ? get_class($var) : $var;
         return $this->info($var, $label, Zend_Wildfire_Plugin_FirePhp::LOG);
