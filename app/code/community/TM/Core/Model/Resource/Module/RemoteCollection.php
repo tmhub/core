@@ -1,12 +1,10 @@
 <?php
 
-class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collection
+class TM_Core_Model_Resource_Module_RemoteCollection extends TM_Core_Model_Resource_Module_Collection_Abstract
 {
     const XML_FEED_URL_PATH = 'tmcore/modules/feed_url';
 
     const RESPONSE_CACHE_KEY = 'tm_components_remote_response';
-
-    protected $_collectedModules = array();
 
     public function getMapping()
     {
@@ -31,16 +29,10 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
     /**
      * Lauch data collecting
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
-     * @return Varien_Data_Collection_Filesystem
+     * @return array
      */
-    public function loadData($printQuery = false, $logQuery = false)
+    protected function _loadModules()
     {
-        if ($this->isLoaded()) {
-            return $this;
-        }
-
         try {
             if (!$responseBody = Mage::app()->loadCache(self::RESPONSE_CACHE_KEY)) {
                 $responseBody = $this->_fetch($this->_getFeedUri());
@@ -139,33 +131,10 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends Varien_Data_Collect
         }
 
         foreach ($result as $moduleName => $values) {
-            $values['id'] = $values['code'];
-            $this->_collectedModules[$values['code']] = $values;
+            $result[$moduleName]['id'] = $moduleName;
         }
 
-        // calculate totals
-        $this->_totalRecords = count($this->_collectedModules);
-        $this->_setIsLoaded();
-
-        // paginate and add items
-        $from = ($this->getCurPage() - 1) * $this->getPageSize();
-        $to = $from + $this->getPageSize() - 1;
-        $isPaginated = $this->getPageSize() > 0;
-
-        $cnt = 0;
-        foreach ($this->_collectedModules as $row) {
-            $cnt++;
-            if ($isPaginated && ($cnt < $from || $cnt > $to)) {
-                continue;
-            }
-            $item = new $this->_itemObjectClass();
-            $this->addItem($item->addData($row));
-            if (!$item->hasId()) {
-                $item->setId($cnt);
-            }
-        }
-
-        return $this;
+        return $result;
     }
 
     /**
