@@ -184,6 +184,8 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends TM_Core_Model_Resou
             'tm/smartsuggest'       => 'TM_SmartSuggest',
             'tm/suggestpage'        => 'TM_SuggestPage',
             'tm/demo-deployer'      => 'TM_Deployer',
+            'tm/helpdesk'           => 'TM_Helpmate',
+            'tm/socialsuite'        => 'TM_SocialSuite',
         );
 
         if (isset($mapping[$packageName])) {
@@ -200,7 +202,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends TM_Core_Model_Resou
         $module = ucwords(str_replace(array('_', '-'), ' ', $module));
         $module = str_replace(' ', '', $module);
 
-        return $vendor . '_' . $module;;
+        return $vendor . '_' . $module;
     }
 
     /**
