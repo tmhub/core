@@ -8,12 +8,14 @@
  *    $('foo').simulate('click'); // => fires "click" event on an element with id=foo
  *
  **/
+/* global Event */
+/* global Element */
 (function(){
   
   var eventMatchers = {
     'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
     'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out))$/
-  }
+  };
   var defaultOptions = {
     pointerX: 0,
     pointerY: 0,
@@ -24,7 +26,7 @@
     metaKey: false,
     bubbles: true,
     cancelable: true
-  }
+  };
   
   Event.simulate = function(element, eventName) {
     var options = Object.extend(Object.clone(defaultOptions), arguments[2] || { });
@@ -41,7 +43,7 @@
 
     if (document.createEvent) {
       oEvent = document.createEvent(eventType);
-      if (eventType == 'HTMLEvents') {
+      if (eventType === 'HTMLEvents') {
         oEvent.initEvent(eventName, options.bubbles, options.cancelable);
       }
       else {
@@ -58,7 +60,7 @@
       element.fireEvent('on' + eventName, oEvent);
     }
     return element;
-  }
+  };
   
   Element.addMethods({ simulate: Event.simulate });
 })();
