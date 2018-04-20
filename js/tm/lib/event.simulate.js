@@ -8,6 +8,8 @@
  *    $('foo').simulate('click'); // => fires "click" event on an element with id=foo
  *
  **/
+/* global Event */
+/* global Element */
 (function(){
   
   var eventMatchers = {
@@ -41,7 +43,7 @@
 
     if (document.createEvent) {
       oEvent = document.createEvent(eventType);
-      if (eventType == 'HTMLEvents') {
+      if (eventType === 'HTMLEvents') {
         oEvent.initEvent(eventName, options.bubbles, options.cancelable);
       }
       else {
@@ -58,7 +60,7 @@
       element.fireEvent('on' + eventName, oEvent);
     }
     return element;
-  }
+  };
   
   Element.addMethods({ simulate: Event.simulate });
 })();
