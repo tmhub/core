@@ -33,6 +33,7 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends TM_Core_Model_Resou
      */
     protected function _loadModules()
     {
+
         try {
             if (!$responseBody = Mage::app()->loadCache(self::RESPONSE_CACHE_KEY)) {
                 $responseBody = $this->_fetch($this->_getFeedUri());
@@ -89,14 +90,16 @@ class TM_Core_Model_Resource_Module_RemoteCollection extends TM_Core_Model_Resou
 
         // fix for argento themes
         if (isset($modules['TM_Argento'])) {
-            $argento = array(
-                'TM_ArgentoArgento',
-                'TM_ArgentoFlat',
-                'TM_ArgentoMall',
-                'TM_ArgentoPure',
-                'TM_ArgentoPure2',
-                'TM_ArgentoLuxury',
-            );
+            $localMagentoModules = Mage::getConfig()->getNode('modules')->children();
+            $argentoThemes = array();
+            foreach ($localMagentoModules as $moduleName => $moduleData) {
+                if (strpos($moduleName, 'TM_Argento') !== false) {
+                    $argentoThemes[] = $moduleName;
+                }
+            }
+
+            // all Argento Themes without package
+            $argento = array_diff($argentoThemes, array_keys($modules));
             foreach ($argento as $theme) {
                 if (!isset($modules[$theme])) {
                     $modules[$theme] = array();
