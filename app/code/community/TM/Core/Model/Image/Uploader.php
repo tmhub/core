@@ -47,14 +47,6 @@ class TM_Core_Model_Image_Uploader
     public function getTargetPath()
     {
         $path = Mage::getBaseDir('media') . DS . $this->getDirectory();
-        if (!file_exists($path)) {
-            $result = $this->createDirectory(
-                $this->getDirectory(),
-                Mage::getBaseDir('media')
-            );
-            $path = $result['path'];
-        }
-
         return $path;
     }
 
@@ -123,42 +115,5 @@ class TM_Core_Model_Image_Uploader
         $path = $this->getTargetPath();
         @unlink($path . DS . $imageName);
         return $this;
-    }
-
-    /**
-     * Create new directory in storage
-     * Inspired by Mage_Cms_Model_Wysiwyg_Images_Storage::createDirectory
-     *
-     * @param string $name New directory name
-     * @param string $path Parent directory path
-     * @throws Mage_Core_Exception
-     * @return array New directory info
-     */
-    public function createDirectory($name, $path)
-    {
-        if (!preg_match(self::DIRECTORY_NAME_REGEXP, $name)) {
-            Mage::throwException(Mage::helper('cms')->__('Invalid folder name. Please, use alphanumeric characters, underscores and dashes.'));
-        }
-
-        if (!is_dir($path) || !is_writable($path)) {
-            $path = Mage::getBaseDir('media');
-        }
-
-        $newPath = $path . DS . $name;
-
-        if (file_exists($newPath)) {
-            Mage::throwException(Mage::helper('cms')->__('A directory with the same name already exists. Please try another folder name.'));
-        }
-
-        $io = new Varien_Io_File();
-        if ($io->mkdir($newPath)) {
-            $result = array(
-                'name'          => $name,
-                'path'          => $newPath
-            );
-            return $result;
-        }
-
-        Mage::throwException(Mage::helper('cms')->__('Cannot create new directory.'));
     }
 }
