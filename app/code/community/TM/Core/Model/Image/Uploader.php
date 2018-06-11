@@ -76,7 +76,7 @@ class TM_Core_Model_Image_Uploader
         }
 
         if (empty($_FILES[$dataKey]['name'])) {
-            if (is_array($value)) {
+            if (is_array($value) && empty($value['delete'])) {
                 $object->setData($dataKey, $value['value']);
             }
 
