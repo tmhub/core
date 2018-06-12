@@ -18,6 +18,11 @@ class TM_Core_Model_Image_Uploader
     protected $_directory = 'tmcore';
 
     /**
+     * @var boolean
+     */
+    protected $_filesDispersion = false;
+
+    /**
      * Get sub-directry name where file will be uploaded
      *
      * @return string
@@ -61,6 +66,27 @@ class TM_Core_Model_Image_Uploader
     }
 
     /**
+     * Set files dispersion flag
+     *
+     * @param boolean $flag
+     */
+    public function setFilesDispersion($flag)
+    {
+        $this->_filesDispersion = $flag;
+        return $this;
+    }
+
+    /**
+     * Get files dispersion flag
+     *
+     * @return boolean
+     */
+    public function getFilesDispersion()
+    {
+        return $this->_filesDispersion;
+    }
+
+    /**
      * Upload image
      *
      * @param  Varien_Object $object
@@ -85,8 +111,9 @@ class TM_Core_Model_Image_Uploader
 
         try {
             $uploader = new Varien_File_Uploader($dataKey);
-            $uploader->setAllowedExtensions($this->getAllowedExtensions());
-            $uploader->setAllowRenameFiles(true);
+            $uploader->setAllowedExtensions($this->_allowedExtensions)
+                ->setFilesDispersion($this->_filesDispersion)
+                ->setAllowRenameFiles(true);
             if (@class_exists('Mage_Core_Model_File_Validator_Image')) {
                 $uploader->addValidateCallback(
                     Mage_Core_Model_File_Validator_Image::NAME,
