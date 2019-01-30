@@ -34,10 +34,10 @@ class TM_Core_Model_Observer_Module
      */
     public function loadLocalData($observer)
     {
-        foreach ($this->_getRemoteCollection() as $remote) {
+        foreach ($this->_getLocalCollection() as $local) {
             $module = Mage::getModel('tmcore/module')
-                ->load($remote->getCode())
-                ->addData($remote->getData())
+                ->load($local->getCode())
+                ->addData($local->getData())
                 ->save();
         }
     }

@@ -91,10 +91,14 @@
             </catalog_product_save_commit_after>
             <tm_core_module_collection_load_before>
                 <observers>
-                    <tmcore>
+                    <tmcore_remote>
                         <class>tmcore/observer_module</class>
                         <method>loadRemoteData</method>
-                    </tmcore>
+                    </tmcore_remote>
+                    <tmcore_local>
+                        <class>tmcore/observer_module</class>
+                        <method>loadLocalData</method>
+                    </tmcore_local>
                 </observers>
             </tm_core_module_collection_load_before>
             <tm_core_module_collection_load_after>
